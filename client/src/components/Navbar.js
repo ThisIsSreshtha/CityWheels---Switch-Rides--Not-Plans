@@ -17,8 +17,21 @@ const Navbar = () => {
       <div className="container">
         <div className="nav-content">
           <Link to="/" className="nav-logo">
-            <h2>🚲 CityWheels</h2>
-            <span className="nav-tagline">Switch Rides, Not Plans</span>
+            <div className="logo-container">
+              <div className="logo-badge">
+                <div className="badge-circle">
+                  <div className="spinning-wheel">⚙</div>
+                  <div className="cycle-icon">🚲</div>
+                </div>
+              </div>
+              <div className="brand-text">
+                <div className="brand-name">
+                  <span className="city-part">CITY</span>
+                  <span className="wheels-part">WHEELS</span>
+                </div>
+                <div className="brand-tagline">⚡ Switch Rides, Not Plans</div>
+              </div>
+            </div>
           </Link>
 
           <ul className="nav-links">

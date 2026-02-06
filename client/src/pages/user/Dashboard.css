@@ -1,19 +1,26 @@
 .dashboard {
   padding: 40px 0;
   min-height: calc(100vh - 70px);
+  background: linear-gradient(to bottom, #fffbf0 0%, #fef5e7 50%, #fff8e8 100%);
 }
 
 .dashboard h1 {
   margin-bottom: 30px;
   color: var(--dark-color);
+  background: linear-gradient(135deg, #ff9800 0%, #ff6f00 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .stat-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #ff9800 0%, #ff6f00 100%);
   color: white;
   padding: 30px;
   border-radius: 10px;
   text-align: center;
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.3);
+  border: 2px solid rgba(255, 193, 7, 0.3);
 }
 
 .stat-card h3 {
@@ -41,8 +48,9 @@
 }
 
 .bookings-table th {
-  background: #f9fafb;
+  background: linear-gradient(135deg, #fff8e8 0%, #fffbf0 100%);
   font-weight: 600;
+  border-bottom: 2px solid rgba(255, 193, 7, 0.3);
 }
 
 .status {

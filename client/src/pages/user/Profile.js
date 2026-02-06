@@ -110,6 +110,32 @@ const Profile = () => {
 
   return (
     <div className="profile-page">
+      {/* Animated Background Elements */}
+      <div className="animated-road">
+        <div className="road-line"></div>
+      </div>
+      
+      {/* Location Markers */}
+      <div className="location-marker pickup-location">
+        <div className="marker-pin"></div>
+        <div className="marker-label">📍 Pickup Point</div>
+      </div>
+      <div className="location-marker dropoff-location">
+        <div className="marker-pin"></div>
+        <div className="marker-label">📍 Drop-off Point</div>
+      </div>
+      
+      {/* Motorcycle Animation */}
+      <div className="motorcycle-container">
+        <div className="motorcycle">🏍️</div>
+      </div>
+      <div className="dust-trail"></div>
+      
+      {/* Clouds */}
+      <div className="cloud cloud1"></div>
+      <div className="cloud cloud2"></div>
+      <div className="cloud cloud3"></div>
+      
       <div className="profile-container">
         <div className="profile-header">
           <h1>👤 My Profile</h1>

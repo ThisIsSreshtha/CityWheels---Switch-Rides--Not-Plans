@@ -3,10 +3,638 @@
 }
 
 .hero {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: linear-gradient(135deg, #fffbf0 0%, #fef5e7 50%, #fff8e8 100%);
+  color: #333;
   padding: 100px 0;
   text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Animated Road */
+.hero .animated-road {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 150px;
+  z-index: 1;
+}
+
+.hero .road-surface {
+  position: absolute;
+  bottom: 30px;
+  width: 100%;
+  height: 90px;
+  background: linear-gradient(to bottom, #4a4a4a 0%, #3a3a3a 50%, #2a2a2a 100%);
+  box-shadow: inset 0 -10px 20px rgba(0,0,0,0.4);
+}
+
+.hero .road-edge {
+  position: absolute;
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.hero .road-edge-top {
+  bottom: 120px;
+}
+
+.hero .road-edge-bottom {
+  bottom: 30px;
+}
+
+.hero .road-line {
+  position: absolute;
+  bottom: 75px;
+  width: 100%;
+  height: 4px;
+  background: repeating-linear-gradient(
+    to right,
+    rgba(255,215,0,0.8) 0px,
+    rgba(255,215,0,0.8) 40px,
+    transparent 40px,
+    transparent 80px
+  );
+  animation: roadMove 2s linear infinite;
+}
+
+@keyframes roadMove {
+  from { background-position: 0 0; }
+  to { background-position: 80px 0; }
+}
+
+/* Traffic Signals */
+.hero .traffic-signal {
+  position: absolute;
+  bottom: 130px;
+  width: 25px;
+  background: #333;
+  border-radius: 8px;
+  padding: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  z-index: 2;
+}
+
+.hero .signal-1 {
+  left: 30%;
+}
+
+.hero .signal-2 {
+  right: 25%;
+}
+
+.hero .signal-light {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  margin: 4px auto;
+  background: rgba(255,255,255,0.2);
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.hero .signal-light.red {
+  background: #ff4444;
+}
+
+.hero .signal-light.yellow {
+  background: rgba(255,215,0,0.3);
+}
+
+.hero .signal-light.green.active {
+  background: #44ff44;
+  box-shadow: 0 0 10px #44ff44, inset 0 2px 4px rgba(0,0,0,0.3);
+  animation: signalGlow 2s ease-in-out infinite;
+}
+
+@keyframes signalGlow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+/* Location Markers */
+.hero .location-marker {
+  position: absolute;
+  bottom: 140px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+  animation: markerBounce 2s ease-in-out infinite;
+}
+
+.hero .pickup-location {
+  left: 10%;
+}
+
+.hero .dropoff-location {
+  right: 10%;
+}
+
+.hero .marker-pin {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 4px 12px rgba(72, 187, 120, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero .marker-pin::before {
+  content: '📍';
+  transform: rotate(45deg);
+  font-size: 1.2rem;
+}
+
+.hero .marker-label {
+  margin-top: 10px;
+  background: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #2d3748;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+}
+
+.hero .marker-time {
+  margin-top: 8px;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 6px 14px;
+  border-radius: 15px;
+  font-weight: 500;
+  font-size: 0.8rem;
+  color: #4a5568;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  white-space: nowrap;
+  border: 2px solid rgba(102, 126, 234, 0.3);
+}
+
+/* Fare Display */
+.hero .fare-display {
+  position: absolute;
+  top: 25%;
+  right: 20%;
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  padding: 8px 14px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
+  text-align: center;
+  z-index: 4;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  animation: farePopup 15s ease-in-out infinite;
+  opacity: 0;
+  transform: scale(0);
+}
+
+.hero .fare-icon {
+  font-size: 1.2rem;
+  margin-bottom: 2px;
+}
+
+.hero .fare-amount {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  margin-bottom: 2px;
+}
+
+.hero .fare-label {
+  font-size: 0.6rem;
+  color: rgba(255, 255, 255, 0.95);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+@keyframes farePopup {
+  0%, 47% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  48%, 49% {
+    opacity: 1;
+    transform: scale(1.2);
+  }
+  50%, 65% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  66%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
+@keyframes markerBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Car Animation */
+.hero .vehicle-container {
+  position: absolute;
+  bottom: 35px;
+  left: -150px;
+  z-index: 3;
+  animation: rideCar 15s ease-in-out infinite;
+}
+
+@keyframes rideCar {
+  0% {
+    left: -150px;
+    transform: scaleX(-1);
+  }
+  48% {
+    left: 10%;
+    transform: scaleX(-1);
+  }
+  50% {
+    left: 10%;
+    transform: scaleX(-1);
+  }
+  52% {
+    left: 10%;
+    transform: scaleX(-1);
+  }
+  96% {
+    left: calc(90% - 150px);
+    transform: scaleX(-1);
+  }
+  98% {
+    left: calc(90% - 150px);
+    transform: scaleX(-1);
+  }
+  100% {
+    left: calc(90% - 150px);
+    transform: scaleX(-1);
+  }
+}
+
+.hero .car {
+  font-size: 8rem;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+  position: relative;
+  z-index: 1;
+}
+
+.hero .rider-in-car {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  animation: carBounce 0.5s ease-in-out infinite;
+}
+
+@keyframes carBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.hero .passenger-in-car {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  position: absolute;
+  left: 50px;
+  top: 35px;
+  z-index: 0;
+  animation: passengerInCar 15s ease-in-out infinite;
+  opacity: 0;
+}
+
+@keyframes passengerInCar {
+  0%, 49% {
+    opacity: 0;
+  }
+  50%, 95% {
+    opacity: 0.9;
+  }
+  96%, 100% {
+    opacity: 0;
+  }
+}
+
+.hero .driver-in-window {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  position: absolute;
+  left: 50px;
+  top: 35px;
+  z-index: 0;
+  animation: driverInCar 15s ease-in-out infinite;
+}
+
+@keyframes driverInCar {
+  0%, 48% {
+    opacity: 0.9;
+  }
+  49%, 100% {
+    opacity: 0;
+  }
+}
+
+/* Dropped Passenger */
+.hero .dropped-passenger {
+  position: absolute;
+  bottom: 125px;
+  right: 6%;
+  font-size: 1.8rem;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  z-index: 2;
+  animation: passengerAppear 15s ease-in-out infinite;
+  opacity: 0;
+}
+
+/* Passenger waiting at pickup */
+.hero .waiting-passenger {
+  position: absolute;
+  bottom: 125px;
+  left: 10%;
+  font-size: 1.8rem;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  z-index: 2;
+  animation: waitingPassenger 15s ease-in-out infinite;
+  opacity: 1;
+}
+
+@keyframes waitingPassenger {
+  0%, 49% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  50%, 100% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+}
+
+/* Verified Badge at Pickup */
+.hero .verified-badge-pickup {
+  position: absolute;
+  left: 8%;
+  bottom: 105px;
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  padding: 10px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  z-index: 4;
+  animation: verifiedAppear 15s ease-in-out infinite;
+  opacity: 0;
+}
+
+.hero .verified-icon {
+  font-size: 1.5rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+@keyframes verifiedAppear {
+  0%, 46% {
+    opacity: 0;
+    transform: scale(0.5) translateY(10px);
+  }
+  47% {
+    opacity: 1;
+    transform: scale(1.2) translateY(-3px);
+  }
+  48% {
+    transform: scale(1) translateY(0);
+  }
+  49%, 50% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  51%, 100% {
+    opacity: 0;
+    transform: scale(0.5) translateY(10px);
+  }
+}
+
+/* Thought Cloud */
+.hero .thought-cloud-container {
+  position: absolute;
+  bottom: 175px;
+  right: 4%;
+  z-index: 3;
+  animation: thoughtAppear 15s ease-in-out infinite;
+  opacity: 0;
+}
+
+.hero .thought-cloud {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 248, 255, 0.9));
+  position: absolute;
+  border: 2px solid rgba(100, 149, 237, 0.3);
+  box-shadow: 0 4px 12px rgba(100, 149, 237, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.5);
+}
+
+.hero .thought-cloud.large {
+  width: 60px;
+  height: 38px;
+  border-radius: 20px;
+  bottom: 35px;
+  right: -5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.hero .thought-cloud.large::before {
+  content: '';
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 248, 255, 0.9));
+  border: 2px solid rgba(100, 149, 237, 0.3);
+  border-radius: 50%;
+  top: -18px;
+  left: 5px;
+  box-shadow: 0 2px 4px rgba(100, 149, 237, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+.hero .thought-cloud.large::after {
+  content: '';
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 248, 255, 0.9));
+  border: 2px solid rgba(100, 149, 237, 0.3);
+  border-radius: 50%;
+  top: -22px;
+  right: 3px;
+  box-shadow: 0 2px 4px rgba(100, 149, 237, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+.hero .thought-cloud.small {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  bottom: 18px;
+  right: 8px;
+}
+
+.hero .thought-cloud.tiny {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  bottom: 5px;
+  right: 12px;
+}
+
+/* Satisfaction Emoji inside thought cloud */
+.hero .satisfaction-emoji {
+  font-size: 1.3rem;
+  z-index: 2;
+  position: relative;
+  animation: emojiSatisfied 3s ease-in-out infinite;
+}
+
+@keyframes emojiSatisfied {
+  0%, 100% { 
+    transform: scale(1) rotate(0deg); 
+  }
+  15% { 
+    transform: scale(1.15) rotate(-5deg); 
+  }
+  30% { 
+    transform: scale(1.05) rotate(5deg); 
+  }
+  45% { 
+    transform: scale(1.1) rotate(-3deg); 
+  }
+  60% { 
+    transform: scale(1) rotate(0deg); 
+  }
+}
+
+@keyframes thoughtAppear {
+  0%, 95% {
+    opacity: 0;
+    transform: scale(0) translateY(-5px);
+  }
+  96% {
+    opacity: 0;
+    transform: scale(0.3) translateY(-3px);
+  }
+  97% {
+    opacity: 1;
+    transform: scale(1.15) translateY(2px);
+  }
+  98% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  99%, 100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes passengerAppear {
+  0%, 95% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  96% {
+    opacity: 0.5;
+    transform: translateY(-5px);
+  }
+  97%, 100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes carBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* Dust/Trail Effect */
+.hero .dust-trail {
+  position: absolute;
+  bottom: 115px;
+  width: 60px;
+  height: 20px;
+  background: radial-gradient(ellipse, rgba(255, 255, 255, 0.5) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: dustMove 20s ease-in-out infinite;
+  opacity: 0;
+  z-index: 2;
+}
+
+@keyframes dustMove {
+  0%, 5% {
+    left: -100px;
+    opacity: 0;
+  }
+  10%, 45% {
+    opacity: 0.6;
+  }
+  48%, 52% {
+    left: calc(90% - 150px);
+    opacity: 0;
+  }
+  55%, 95% {
+    opacity: 0.6;
+  }
+  98%, 100% {
+    left: 10%;
+    opacity: 0;
+  }
+}
+
+/* Clouds */
+.hero .cloud {
+  position: absolute;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 100px;
+  opacity: 0.7;
+  animation: cloudFloat 30s linear infinite;
+}
+
+.hero .cloud1 {
+  width: 100px;
+  height: 40px;
+  top: 15%;
+  left: -150px;
+}
+
+.hero .cloud2 {
+  width: 140px;
+  height: 50px;
+  top: 25%;
+  left: -200px;
+  animation-duration: 40s;
+  animation-delay: 5s;
+}
+
+.hero .cloud3 {
+  width: 80px;
+  height: 35px;
+  top: 35%;
+  left: -100px;
+  animation-duration: 35s;
+  animation-delay: 10s;
+}
+
+@keyframes cloudFloat {
+  from { transform: translateX(0); }
+  to { transform: translateX(calc(100vw + 200px)); }
+}
+
+/* Ensure content stays on top */
+.hero .container {
+  position: relative;
+  z-index: 10;
 }
 
 .hero-content h1 {
@@ -36,45 +664,302 @@
 .features,
 .vehicle-types,
 .how-it-works {
-  padding: 80px 0;
+  padding: 60px 0;
+  background: linear-gradient(to bottom, #fffbf0 0%, #fef5e7 50%, #fff8e8 100%);
+  position: relative;
+}
+
+.features::before,
+.vehicle-types::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(255, 193, 7, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(255, 152, 0, 0.08) 0%, transparent 50%);
+  pointer-events: none;
 }
 
 .section-title {
   text-align: center;
-  font-size: 36px;
-  margin-bottom: 50px;
+  font-size: 32px;
+  margin-bottom: 40px;
   color: var(--dark-color);
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 10px rgba(102, 126, 234, 0.1);
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 2px;
+}
+
+/* Animation Classes */
+.animate-title {
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.animate-card {
+  animation: fadeInUp 0.8s ease-out backwards;
+}
+
+.popup-card {
+  animation: popupScale 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.5) backwards;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popupScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotate(-5deg);
+  }
+  50% {
+    transform: scale(1.05) rotate(2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 .feature-card,
 .vehicle-type-card {
   text-align: center;
-  padding: 30px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  padding: 28px 24px;
+  background: linear-gradient(135deg, #ffffff 0%, #fffdf7 100%);
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(255, 152, 0, 0.12);
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 2px solid rgba(255, 193, 7, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before,
+.vehicle-type-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 152, 0, 0.1) 100%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  z-index: 0;
+}
+
+.feature-card::after,
+.vehicle-type-card::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.feature-card:hover::before,
+.vehicle-type-card:hover::before {
+  opacity: 1;
+}
+
+.feature-card:hover::after,
+.vehicle-type-card:hover::after {
+  opacity: 1;
 }
 
 .feature-card:hover,
 .vehicle-type-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 40px rgba(255, 152, 0, 0.25), 0 0 0 1px rgba(255, 193, 7, 0.4);
+  border-color: rgba(255, 193, 7, 0.5);
+}
+
+.feature-card > *,
+.vehicle-type-card > * {
+  position: relative;
+  z-index: 1;
 }
 
 .feature-icon {
-  font-size: 60px;
-  margin-bottom: 20px;
+  font-size: 50px;
+  margin-bottom: 18px;
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  display: inline-block;
+  filter: drop-shadow(0 3px 10px rgba(102, 126, 234, 0.25));
+}
+
+.feature-card:hover .feature-icon {
+  transform: scale(1.15) rotate(8deg) translateY(-3px);
+  filter: drop-shadow(0 6px 16px rgba(102, 126, 234, 0.4));
 }
 
 .feature-card h3,
 .vehicle-type-card h3 {
-  font-size: 24px;
-  margin-bottom: 15px;
+  font-size: 20px;
+  margin-bottom: 10px;
   color: var(--dark-color);
+  font-weight: 700;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.feature-card:hover h3,
+.vehicle-type-card:hover h3 {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  transform: scale(1.03);
+}
+
+.feature-card p,
+.vehicle-type-card p {
+  color: #4a5568;
+  line-height: 1.5;
+  font-size: 14px;
+  transition: color 0.3s ease;
+  margin-bottom: 0;
+}
+
+.feature-card:hover p,
+.vehicle-type-card:hover p {
+  color: #2d3748;
+}
+
+.vehicle-icon {
+  font-size: 65px;
+  margin: 18px 0 22px;
+  display: inline-block;
+  animation: vehicleBounce 2s ease-in-out infinite;
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.12));
+  transition: all 0.4s ease;
+  position: relative;
+}
+
+.scooter-icon {
+  filter: drop-shadow(0 10px 24px rgba(255, 107, 107, 0.5)) hue-rotate(0deg) saturate(1.8) brightness(1.1);
+}
+
+.motorcycle-icon {
+  filter: drop-shadow(0 10px 24px rgba(72, 187, 120, 0.5)) hue-rotate(20deg) saturate(1.8) brightness(1.1);
+  animation-delay: 0.3s;
+}
+
+.car-icon {
+  filter: drop-shadow(0 10px 24px rgba(66, 153, 225, 0.5)) hue-rotate(180deg) saturate(1.8) brightness(1.1);
+  animation-delay: 0.6s;
+}
+
+.vehicle-type-card:hover .vehicle-icon {
+  transform: scale(1.15) translateY(-10px);
+  animation: vehicleHover 0.4s ease-in-out infinite alternate;
+  filter: drop-shadow(0 12px 32px rgba(102, 126, 234, 0.6)) saturate(2);
+}
+
+@keyframes vehicleBounce {
+  0%, 100% {
+    transform: translateY(0px) rotate(-2deg);
+  }
+  50% {
+    transform: translateY(-15px) rotate(2deg);
+  }
+}
+
+@keyframes vehicleHover {
+  0% {
+    transform: scale(1.15) translateY(-10px) rotate(-3deg);
+  }
+  100% {
+    transform: scale(1.2) translateY(-15px) rotate(3deg);
+  }
+}
+
+.button-wrapper {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255, 193, 7, 0.2);
 }
 
 .vehicle-type-card .btn {
-  margin-top: 20px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+  font-weight: 600;
+  padding: 10px 24px;
+  font-size: 14px;
+  background: linear-gradient(135deg, #ff9800 0%, #ff6f00 100%);
+  border: none;
+  box-shadow: 0 3px 12px rgba(255, 152, 0, 0.3);
+}
+
+.vehicle-type-card .btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.vehicle-type-card .btn:hover::before {
+  width: 350px;
+  height: 350px;
+}
+
+.vehicle-type-card:hover .btn {
+  transform: scale(1.05) translateY(-3px);
+  box-shadow: 0 8px 24px rgba(255, 152, 0, 0.5);
+  background: linear-gradient(135deg, #ff6f00 0%, #ff9800 100%);
 }
 
 .steps {
