@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
+import './Profile.css';
 
 const Profile = () => {
   const { user } = useContext(AuthContext);
@@ -108,149 +109,199 @@ const Profile = () => {
   };
 
   return (
-    <div className="container" style={{ padding: '40px 20px' }}>
-      <h1>My Profile</h1>
+    <div className="profile-page">
+      <div className="profile-container">
+        <div className="profile-header">
+          <h1>👤 My Profile</h1>
+          <p>Manage your personal information and documents</p>
+        </div>
 
-      {user?.isVerified ? (
-        <div className="alert alert-success">✅ Your profile is verified</div>
-      ) : (
-        <div className="alert alert-warning">⚠️ Please upload your documents for verification</div>
-      )}
-
-      <div className="card">
-        <h2>Personal Information</h2>
-        <form onSubmit={handleProfileSubmit}>
-          <div className="grid grid-2">
-            <div className="form-group">
-              <label>Name</label>
-              <input
-                type="text"
-                name="name"
-                value={profileData.name}
-                onChange={handleProfileChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Phone</label>
-              <input
-                type="tel"
-                name="phone"
-                value={profileData.phone}
-                onChange={handleProfileChange}
-                required
-              />
-            </div>
-            <div className="form-group">
-              <label>Street</label>
-              <input
-                type="text"
-                name="street"
-                value={profileData.street}
-                onChange={handleProfileChange}
-              />
-            </div>
-            <div className="form-group">
-              <label>City</label>
-              <input
-                type="text"
-                name="city"
-                value={profileData.city}
-                onChange={handleProfileChange}
-              />
-            </div>
-            <div className="form-group">
-              <label>State</label>
-              <input
-                type="text"
-                name="state"
-                value={profileData.state}
-                onChange={handleProfileChange}
-              />
-            </div>
-            <div className="form-group">
-              <label>Pincode</label>
-              <input
-                type="text"
-                name="pincode"
-                value={profileData.pincode}
-                onChange={handleProfileChange}
-              />
-            </div>
+        {user?.isVerified ? (
+          <div className="verification-status verified">
+            <span>✅</span>
+            <span>Your profile is verified and ready to book!</span>
           </div>
-          <button type="submit" className="btn btn-primary">Update Profile</button>
-        </form>
-      </div>
+        ) : (
+          <div className="verification-status pending">
+            <span>⚠️</span>
+            <span>Please upload your documents for verification to start booking</span>
+          </div>
+        )}
 
-      <div className="grid grid-2">
-        <div className="card">
-          <h2>Aadhar Card</h2>
-          {user?.documents?.aadharCard?.verified && (
-            <p className="alert alert-success">✅ Verified</p>
-          )}
-          <form onSubmit={handleAadharSubmit}>
-            <div className="form-group">
-              <label>Aadhar Number</label>
-              <input
-                type="text"
-                name="aadharNumber"
-                value={documents.aadharNumber}
-                onChange={handleDocumentChange}
-                required
-              />
+        <div className="profile-card">
+          <div className="card-header">
+            <div className="card-icon info">
+              📋
             </div>
-            <div className="form-group">
-              <label>Upload Aadhar</label>
-              <input
-                type="file"
-                name="aadharFile"
-                onChange={handleDocumentChange}
-                required
-                accept="image/*,application/pdf"
-              />
+            <h2>Personal Information</h2>
+          </div>
+          <form onSubmit={handleProfileSubmit}>
+            <div className="form-row">
+              <div className="input-group">
+                <label>Full Name</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={profileData.name}
+                  onChange={handleProfileChange}
+                  placeholder="Enter your full name"
+                  required
+                />
+              </div>
+              <div className="input-group">
+                <label>Phone Number</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={profileData.phone}
+                  onChange={handleProfileChange}
+                  placeholder="Enter your phone number"
+                  required
+                />
+              </div>
             </div>
-            <button type="submit" className="btn btn-primary">Upload Aadhar</button>
+            <div className="form-row">
+              <div className="input-group">
+                <label>Street Address</label>
+                <input
+                  type="text"
+                  name="street"
+                  value={profileData.street}
+                  onChange={handleProfileChange}
+                  placeholder="Enter your street address"
+                />
+              </div>
+              <div className="input-group">
+                <label>City</label>
+                <input
+                  type="text"
+                  name="city"
+                  value={profileData.city}
+                  onChange={handleProfileChange}
+                  placeholder="Enter your city"
+                />
+              </div>
+            </div>
+            <div className="form-row">
+              <div className="input-group">
+                <label>State</label>
+                <input
+                  type="text"
+                  name="state"
+                  value={profileData.state}
+                  onChange={handleProfileChange}
+                  placeholder="Enter your state"
+                />
+              </div>
+              <div className="input-group">
+                <label>Pincode</label>
+                <input
+                  type="text"
+                  name="pincode"
+                  value={profileData.pincode}
+                  onChange={handleProfileChange}
+                  placeholder="Enter your pincode"
+                />
+              </div>
+            </div>
+            <button type="submit" className="btn-submit">💾 Update Profile</button>
           </form>
         </div>
 
-        <div className="card">
-          <h2>Driving License</h2>
-          {user?.documents?.drivingLicense?.verified && (
-            <p className="alert alert-success">✅ Verified</p>
-          )}
-          <form onSubmit={handleLicenseSubmit}>
-            <div className="form-group">
-              <label>License Number</label>
-              <input
-                type="text"
-                name="licenseNumber"
-                value={documents.licenseNumber}
-                onChange={handleDocumentChange}
-                required
-              />
+        <div className="documents-grid">
+          <div className="profile-card">
+            <div className="card-header">
+              <div className="card-icon aadhar">
+                🪪
+              </div>
+              <h2>Aadhar Card</h2>
             </div>
-            <div className="form-group">
-              <label>Expiry Date</label>
-              <input
-                type="date"
-                name="expiryDate"
-                value={documents.expiryDate}
-                onChange={handleDocumentChange}
-                required
-              />
+            {user?.documents?.aadharCard?.verified && (
+              <div className="verified-badge">
+                <span>✅</span>
+                <span>Verified</span>
+              </div>
+            )}
+            <form onSubmit={handleAadharSubmit}>
+              <div className="input-group">
+                <label>Aadhar Number</label>
+                <input
+                  type="text"
+                  name="aadharNumber"
+                  value={documents.aadharNumber}
+                  onChange={handleDocumentChange}
+                  placeholder="Enter 12-digit Aadhar number"
+                  maxLength="12"
+                  required
+                />
+                <p className="info-text">Enter your 12-digit Aadhar card number</p>
+              </div>
+              <div className="input-group">
+                <label>Upload Aadhar Card</label>
+                <input
+                  type="file"
+                  name="aadharFile"
+                  onChange={handleDocumentChange}
+                  required
+                  accept="image/*,application/pdf"
+                />
+                <p className="info-text">Accepted formats: JPG, PNG, PDF (Max 5MB)</p>
+              </div>
+              <button type="submit" className="btn-submit">📤 Upload Aadhar</button>
+            </form>
+          </div>
+
+          <div className="profile-card">
+            <div className="card-header">
+              <div className="card-icon license">
+                🚗
+              </div>
+              <h2>Driving License</h2>
             </div>
-            <div className="form-group">
-              <label>Upload License</label>
-              <input
-                type="file"
-                name="licenseFile"
-                onChange={handleDocumentChange}
-                required
-                accept="image/*,application/pdf"
-              />
-            </div>
-            <button type="submit" className="btn btn-primary">Upload License</button>
-          </form>
+            {user?.documents?.drivingLicense?.verified && (
+              <div className="verified-badge">
+                <span>✅</span>
+                <span>Verified</span>
+              </div>
+            )}
+            <form onSubmit={handleLicenseSubmit}>
+              <div className="input-group">
+                <label>License Number</label>
+                <input
+                  type="text"
+                  name="licenseNumber"
+                  value={documents.licenseNumber}
+                  onChange={handleDocumentChange}
+                  placeholder="Enter your DL number"
+                  required
+                />
+                <p className="info-text">Enter your driving license number</p>
+              </div>
+              <div className="input-group">
+                <label>Expiry Date</label>
+                <input
+                  type="date"
+                  name="expiryDate"
+                  value={documents.expiryDate}
+                  onChange={handleDocumentChange}
+                  required
+                />
+                <p className="info-text">License must be valid for booking</p>
+              </div>
+              <div className="input-group">
+                <label>Upload License</label>
+                <input
+                  type="file"
+                  name="licenseFile"
+                  onChange={handleDocumentChange}
+                  required
+                  accept="image/*,application/pdf"
+                />
+                <p className="info-text">Accepted formats: JPG, PNG, PDF (Max 5MB)</p>
+              </div>
+              <button type="submit" className="btn-submit">📤 Upload License</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
