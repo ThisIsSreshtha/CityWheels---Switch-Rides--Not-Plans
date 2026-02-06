@@ -27,8 +27,16 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    enum: ['user', 'admin'],
+    enum: ['user', 'owner', 'admin'],
     default: 'user'
+  },
+  businessName: {
+    type: String,
+    trim: true
+  },
+  businessAddress: {
+    type: String,
+    trim: true
   },
   documents: {
     aadharCard: {

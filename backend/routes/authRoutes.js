@@ -14,7 +14,7 @@ router.post('/register', [
   body('password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters')
 ], async (req, res) => {
   try {
-    const { name, email, phone, password } = req.body;
+    const { name, email, phone, password, role } = req.body;
 
     // Check if user exists
     const userExists = await User.findOne({ $or: [{ email }, { phone }] });
@@ -25,12 +25,16 @@ router.post('/register', [
       });
     }
 
+    // Only allow 'user' or 'owner' roles during registration
+    const allowedRole = ['user', 'owner'].includes(role) ? role : 'user';
+
     // Create user
     const user = await User.create({
       name,
       email,
       phone,
-      password
+      password,
+      role: allowedRole
     });
 
     const token = generateToken(user._id);

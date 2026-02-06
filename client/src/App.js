@@ -26,10 +26,17 @@ import ManageVehicles from './pages/admin/ManageVehicles';
 import ManageBookings from './pages/admin/ManageBookings';
 import Reports from './pages/admin/Reports';
 
+// Owner Pages
+import OwnerDashboard from './pages/owner/Dashboard';
+import OwnerMyRentals from './pages/owner/MyRentals';
+import OwnerDocuments from './pages/owner/DocumentVerification';
+import OwnerProfile from './pages/owner/Profile';
+
 // Components
 import Navbar from './components/Navbar';
 import PrivateRoute from './components/PrivateRoute';
 import AdminRoute from './components/AdminRoute';
+import OwnerRoute from './components/OwnerRoute';
 
 function App() {
   return (
@@ -59,6 +66,12 @@ function App() {
             <Route path="/admin/vehicles" element={<AdminRoute><ManageVehicles /></AdminRoute>} />
             <Route path="/admin/bookings" element={<AdminRoute><ManageBookings /></AdminRoute>} />
             <Route path="/admin/reports" element={<AdminRoute><Reports /></AdminRoute>} />
+
+            {/* Owner Routes */}
+            <Route path="/owner/dashboard" element={<OwnerRoute><OwnerDashboard /></OwnerRoute>} />
+            <Route path="/owner/rentals" element={<OwnerRoute><OwnerMyRentals /></OwnerRoute>} />
+            <Route path="/owner/documents" element={<OwnerRoute><OwnerDocuments /></OwnerRoute>} />
+            <Route path="/owner/profile" element={<OwnerRoute><OwnerProfile /></OwnerRoute>} />
 
             {/* 404 */}
             <Route path="*" element={<Navigate to="/" />} />

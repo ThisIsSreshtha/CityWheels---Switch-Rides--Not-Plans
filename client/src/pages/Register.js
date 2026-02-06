@@ -10,7 +10,8 @@ const Register = () => {
     email: '',
     phone: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    role: 'user'
   });
 
   const { register } = useContext(AuthContext);
@@ -36,7 +37,11 @@ const Register = () => {
 
     if (result.success) {
       toast.success('Registration successful! Please complete your profile and upload documents.');
-      navigate('/user/profile');
+      if (formData.role === 'owner') {
+        navigate('/owner/dashboard');
+      } else {
+        navigate('/user/profile');
+      }
     } else {
       toast.error(result.message);
     }
@@ -109,6 +114,19 @@ const Register = () => {
               required
               placeholder="Re-enter your password"
             />
+          </div>
+
+          <div className="form-group">
+            <label>Register As</label>
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '14px', background: '#f8fafc', color: '#334155' }}
+            >
+              <option value="user">Rider — I want to rent vehicles</option>
+              <option value="owner">Owner — I want to list vehicles for rent</option>
+            </select>
           </div>
 
           <button type="submit" className="btn btn-primary btn-block">
