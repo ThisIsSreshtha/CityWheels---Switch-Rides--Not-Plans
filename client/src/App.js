@@ -20,6 +20,9 @@ import MyBookings from './pages/user/MyBookings';
 import CreateBooking from './pages/user/CreateBooking';
 
 // Admin Pages
+import AdminHome from './pages/admin/Home';
+import AdminProfile from './pages/admin/Profile';
+import AdminDocVerification from './pages/admin/DocumentVerification';
 import AdminDashboard from './pages/admin/Dashboard';
 import ManageUsers from './pages/admin/ManageUsers';
 import ManageVehicles from './pages/admin/ManageVehicles';
@@ -61,6 +64,9 @@ function App() {
             <Route path="/user/book/:vehicleId" element={<PrivateRoute><CreateBooking /></PrivateRoute>} />
 
             {/* Admin Routes */}
+            <Route path="/admin/home" element={<AdminRoute><AdminHome /></AdminRoute>} />
+            <Route path="/admin/profile" element={<AdminRoute><AdminProfile /></AdminRoute>} />
+            <Route path="/admin/document-verification" element={<AdminRoute><AdminDocVerification /></AdminRoute>} />
             <Route path="/admin/dashboard" element={<AdminRoute><AdminDashboard /></AdminRoute>} />
             <Route path="/admin/users" element={<AdminRoute><ManageUsers /></AdminRoute>} />
             <Route path="/admin/vehicles" element={<AdminRoute><ManageVehicles /></AdminRoute>} />

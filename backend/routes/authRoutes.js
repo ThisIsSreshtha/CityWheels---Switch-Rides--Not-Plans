@@ -25,8 +25,8 @@ router.post('/register', [
       });
     }
 
-    // Only allow 'user' or 'owner' roles during registration
-    const allowedRole = ['user', 'owner'].includes(role) ? role : 'user';
+    // Only allow 'user', 'owner', or 'admin' roles during registration
+    const allowedRole = ['user', 'owner', 'admin'].includes(role) ? role : 'user';
 
     // Create user
     const user = await User.create({

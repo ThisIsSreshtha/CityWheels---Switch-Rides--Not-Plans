@@ -3,11 +3,14 @@
   color: white;
   padding: 15px 0;
   box-shadow: 0 6px 25px rgba(37, 99, 235, 0.3);
-  position: sticky;
+  position: fixed;
   top: 0;
-  z-index: 1000;
-  position: relative;
+  left: 0;
+  right: 0;
+  z-index: 1100;
   border-bottom: 4px solid #60a5fa;
+  height: 70px;
+  box-sizing: border-box;
 }
 
 .navbar::before {

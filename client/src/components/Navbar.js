@@ -42,10 +42,7 @@ const Navbar = () => {
               <>
                 {isAdmin ? (
                   <>
-                    <li><Link to="/admin/dashboard">Dashboard</Link></li>
-                    <li><Link to="/admin/users">Users</Link></li>
-                    <li><Link to="/admin/vehicles">Manage Vehicles</Link></li>
-                    <li><Link to="/admin/bookings">Bookings</Link></li>
+                    <li><Link to="/admin/home">Admin Panel</Link></li>
                   </>
                 ) : isOwner ? (
                   <>

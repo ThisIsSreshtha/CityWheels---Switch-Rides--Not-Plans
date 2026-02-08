@@ -37,7 +37,9 @@ const Register = () => {
 
     if (result.success) {
       toast.success('Registration successful! Please complete your profile and upload documents.');
-      if (formData.role === 'owner') {
+      if (formData.role === 'admin') {
+        navigate('/admin/home');
+      } else if (formData.role === 'owner') {
         navigate('/owner/dashboard');
       } else {
         navigate('/user/profile');
@@ -126,6 +128,7 @@ const Register = () => {
             >
               <option value="user">Rider — I want to rent vehicles</option>
               <option value="owner">Owner — I want to list vehicles for rent</option>
+              <option value="admin">Admin — I want to manage the platform</option>
             </select>
           </div>
 

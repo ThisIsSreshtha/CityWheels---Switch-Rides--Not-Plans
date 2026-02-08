@@ -4,7 +4,8 @@
 .owner-panel {
   display: flex;
   min-height: 100vh;
-  padding-top: 60px;
+  padding-top: 0;
+  margin-top: 0;
   background: #f0f2f5;
 }
 

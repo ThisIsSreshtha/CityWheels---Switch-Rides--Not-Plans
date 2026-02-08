@@ -28,7 +28,9 @@ const Login = () => {
     if (result.success) {
       toast.success('Login successful!');
       if (result.data.data.user.role === 'admin') {
-        navigate('/admin/dashboard');
+        navigate('/admin/home');
+      } else if (result.data.data.user.role === 'owner') {
+        navigate('/owner/dashboard');
       } else {
         navigate('/user/dashboard');
       }
