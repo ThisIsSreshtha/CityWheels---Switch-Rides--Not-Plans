@@ -9,6 +9,9 @@ const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [recentVehicles, setRecentVehicles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    return localStorage.getItem('ownerSidebarCollapsed') === 'true';
+  });
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -36,20 +39,29 @@ const Dashboard = () => {
     navigate('/');
   };
 
+  const toggleSidebar = () => {
+    const next = !sidebarCollapsed;
+    setSidebarCollapsed(next);
+    localStorage.setItem('ownerSidebarCollapsed', String(next));
+  };
+
   if (loading) {
     return (
-      <div className="owner-panel">
-        <Sidebar user={user} currentPath={location.pathname} onLogout={handleLogout} />
+      <div className={`owner-panel ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+        <Sidebar user={user} currentPath={location.pathname} onLogout={handleLogout} collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
         <div className="owner-content">
-          <p>Loading...</p>
+          <div className="owner-loading">
+            <div className="loading-spinner"></div>
+            <p>Loading...</p>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="owner-panel">
-      <Sidebar user={user} currentPath={location.pathname} onLogout={handleLogout} />
+    <div className={`owner-panel ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+      <Sidebar user={user} currentPath={location.pathname} onLogout={handleLogout} collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
       <div className="owner-content">
         <h1 className="page-title">Dashboard</h1>
         <p className="page-subtitle">Overview of your rental business</p>
@@ -144,39 +156,91 @@ const Dashboard = () => {
 };
 
 // ===== Shared Sidebar Component =====
-export const Sidebar = ({ user, currentPath, onLogout }) => {
-  const links = [
-    { to: '/owner/dashboard', icon: '📊', label: 'Dashboard' },
-    { to: '/owner/rentals', icon: '🚗', label: 'My Rentals' },
-    { to: '/owner/documents', icon: '📄', label: 'Documents' },
-    { to: '/owner/profile', icon: '👤', label: 'Profile' },
+export const Sidebar = ({ user, currentPath, onLogout, collapsed, onToggle }) => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navSections = [
+    {
+      label: 'Overview',
+      links: [
+        { to: '/owner/dashboard', icon: '📊', label: 'Dashboard' },
+        { to: '/owner/rentals', icon: '🚗', label: 'My Rentals' },
+      ]
+    },
+    {
+      label: 'Account',
+      links: [
+        { to: '/owner/documents', icon: '📄', label: 'Documents' },
+        { to: '/owner/profile', icon: '👤', label: 'Profile' },
+      ]
+    }
   ];
 
   return (
-    <aside className="owner-sidebar">
-      <div className="sidebar-header">
-        <h2>🏢 Owner Panel</h2>
-        <p>Welcome, {user?.name || 'Owner'}</p>
-      </div>
-      <nav className="sidebar-nav">
-        {links.map(link => (
-          <Link
-            key={link.to}
-            to={link.to}
-            className={`sidebar-link ${currentPath === link.to ? 'active' : ''}`}
-          >
-            <span className="link-icon">{link.icon}</span>
-            {link.label}
-          </Link>
-        ))}
-      </nav>
-      <div className="sidebar-divider" />
-      <div className="sidebar-footer">
-        <button onClick={onLogout} className="logout-btn">
-          <span>🚪</span> Logout
-        </button>
-      </div>
-    </aside>
+    <>
+      {/* Mobile overlay */}
+      <div
+        className={`owner-sidebar-overlay ${mobileOpen ? 'show' : ''}`}
+        onClick={() => setMobileOpen(false)}
+      />
+
+      <aside className={`owner-sidebar ${collapsed ? 'collapsed' : ''} ${mobileOpen ? 'mobile-open' : ''}`}>
+        {/* Header with three-dot toggle */}
+        <div className="owner-sidebar-header">
+          <div className="owner-sidebar-brand">
+            <div className="owner-sidebar-avatar">
+              {collapsed ? '🏢' : user?.name?.charAt(0)?.toUpperCase() || 'O'}
+            </div>
+            <div className="owner-sidebar-header-text">
+              <h2>Owner Panel</h2>
+              <p>{user?.name || 'Owner'}</p>
+            </div>
+          </div>
+          <button className="owner-sidebar-dots" onClick={onToggle} title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}>
+            <span className="dot"></span>
+            <span className="dot"></span>
+            <span className="dot"></span>
+          </button>
+        </div>
+
+        {/* Navigation */}
+        <nav className="owner-sidebar-nav">
+          {navSections.map((section, idx) => (
+            <React.Fragment key={idx}>
+              <div className="owner-sidebar-section-label">{section.label}</div>
+              {section.links.map(link => (
+                <Link
+                  key={link.to}
+                  to={link.to}
+                  className={`owner-sidebar-link ${currentPath === link.to ? 'active' : ''}`}
+                  data-tooltip={link.label}
+                  onClick={() => setMobileOpen(false)}
+                >
+                  <span className="owner-link-icon">{link.icon}</span>
+                  <span className="owner-link-text">{link.label}</span>
+                </Link>
+              ))}
+              {idx < navSections.length - 1 && <div className="owner-sidebar-divider" />}
+            </React.Fragment>
+          ))}
+        </nav>
+
+        <div className="owner-sidebar-divider" />
+
+        {/* Footer */}
+        <div className="owner-sidebar-footer">
+          <button onClick={onLogout} className="owner-logout-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <span className="logout-text">Logout</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* Mobile floating toggle */}
+      <button className="owner-mobile-toggle" onClick={() => setMobileOpen(!mobileOpen)}>
+        {mobileOpen ? '✕' : '☰'}
+      </button>
+    </>
   );
 };
 

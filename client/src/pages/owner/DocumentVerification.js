@@ -10,12 +10,21 @@ const DocumentVerification = () => {
   const { user, logout } = useContext(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    return localStorage.getItem('ownerSidebarCollapsed') === 'true';
+  });
 
   const [aadharData, setAadharData] = useState({ aadharNumber: '', aadharFile: null });
   const [licenseData, setLicenseData] = useState({ licenseNumber: '', expiryDate: '', licenseFile: null });
   const [businessData, setBusinessData] = useState({ gstNumber: '', businessDoc: null });
 
   const handleLogout = () => { logout(); navigate('/'); };
+
+  const toggleSidebar = () => {
+    const next = !sidebarCollapsed;
+    setSidebarCollapsed(next);
+    localStorage.setItem('ownerSidebarCollapsed', String(next));
+  };
 
   const aadharStatus = user?.documents?.aadharCard?.verified
     ? 'verified'
@@ -94,8 +103,8 @@ const DocumentVerification = () => {
   };
 
   return (
-    <div className="owner-panel">
-      <Sidebar user={user} currentPath={location.pathname} onLogout={handleLogout} />
+    <div className={`owner-panel ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+      <Sidebar user={user} currentPath={location.pathname} onLogout={handleLogout} collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
       <div className="owner-content">
         <h1 className="page-title">Document Verification</h1>
         <p className="page-subtitle">Upload and verify your identity & business documents</p>

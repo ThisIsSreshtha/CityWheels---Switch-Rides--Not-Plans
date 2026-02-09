@@ -12,6 +12,9 @@ const MyRentals = () => {
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [editingVehicle, setEditingVehicle] = useState(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    return localStorage.getItem('ownerSidebarCollapsed') === 'true';
+  });
   const [formData, setFormData] = useState({
     name: '', type: 'scooter', category: 'non-electric', brand: '', model: '',
     registrationNumber: '', seatingCapacity: '', fuelType: '', mileage: '',
@@ -35,6 +38,12 @@ const MyRentals = () => {
   };
 
   const handleLogout = () => { logout(); navigate('/'); };
+
+  const toggleSidebar = () => {
+    const next = !sidebarCollapsed;
+    setSidebarCollapsed(next);
+    localStorage.setItem('ownerSidebarCollapsed', String(next));
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -149,8 +158,8 @@ const MyRentals = () => {
   };
 
   return (
-    <div className="owner-panel">
-      <Sidebar user={user} currentPath={location.pathname} onLogout={handleLogout} />
+    <div className={`owner-panel ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+      <Sidebar user={user} currentPath={location.pathname} onLogout={handleLogout} collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
       <div className="owner-content">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
           <div>

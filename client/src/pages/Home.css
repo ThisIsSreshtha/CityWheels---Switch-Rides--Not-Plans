@@ -5,7 +5,7 @@
 .hero {
   background: linear-gradient(135deg, #fffbf0 0%, #fef5e7 50%, #fff8e8 100%);
   color: #333;
-  padding: 100px 0;
+  padding: 100px 0 200px;
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -651,14 +651,17 @@
 
 .hero-buttons {
   display: flex;
-  gap: 20px;
+  gap: 14px;
   justify-content: center;
   flex-wrap: wrap;
 }
 
 .btn-large {
-  padding: 15px 40px;
-  font-size: 18px;
+  padding: 12px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  border-radius: 8px;
 }
 
 .features,

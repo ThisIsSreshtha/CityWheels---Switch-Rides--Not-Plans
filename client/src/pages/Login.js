@@ -26,7 +26,28 @@ const Login = () => {
     const result = await login(formData.email, formData.password);
 
     if (result.success) {
-      toast.success('Login successful!');
+      const userName = result.data.data.user.name || 'User';
+      toast.success(
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <span style={{ fontSize: '20px' }}>🔓</span>
+          <div>
+            <div style={{ fontWeight: 700, fontSize: '14px', marginBottom: '2px' }}>Welcome back, {userName}!</div>
+            <div style={{ fontSize: '12px', opacity: 0.85 }}>You have been logged in successfully.</div>
+          </div>
+        </div>,
+        {
+          icon: false,
+          style: {
+            background: 'linear-gradient(135deg, #b45309, #f59e0b)',
+            color: '#fff',
+            borderRadius: '12px',
+            padding: '14px 18px',
+            boxShadow: '0 8px 24px rgba(245, 158, 11, 0.35)',
+            border: '1px solid rgba(253, 230, 138, 0.3)',
+          },
+          progressStyle: { background: '#fde68a' },
+        }
+      );
       if (result.data.data.user.role === 'admin') {
         navigate('/admin/home');
       } else if (result.data.data.user.role === 'owner') {

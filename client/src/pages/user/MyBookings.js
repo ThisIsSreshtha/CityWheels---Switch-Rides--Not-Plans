@@ -1,12 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { AuthContext } from '../../context/AuthContext';
+import { RiderSidebar } from './Dashboard';
 import { toast } from 'react-toastify';
+import './RiderPanel.css';
 import './MyBookings.css';
 
 const MyBookings = () => {
+  const { user, logout } = useContext(AuthContext);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('all');
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    return localStorage.getItem('riderSidebarCollapsed') === 'true';
+  });
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => { logout(); navigate('/'); };
+  const toggleSidebar = () => {
+    const next = !sidebarCollapsed;
+    setSidebarCollapsed(next);
+    localStorage.setItem('riderSidebarCollapsed', String(next));
+  };
 
   useEffect(() => {
     fetchBookings();
@@ -54,7 +71,10 @@ const MyBookings = () => {
   const filteredBookings = getFilteredBookings();
 
   return (
-    <div className="my-bookings-page">
+    <div className={`rider-panel ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+      <RiderSidebar user={user} currentPath={location.pathname} onLogout={handleLogout} collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
+      <div className="rider-content">
+    <div className="my-bookings-page" style={{ padding: 0, minHeight: 'auto' }}>
       <div className="bookings-container">
         <div className="bookings-header">
           <h1>📋 My Bookings</h1>
@@ -146,6 +166,8 @@ const MyBookings = () => {
             ))}
           </div>
         )}
+      </div>
+    </div>
       </div>
     </div>
   );

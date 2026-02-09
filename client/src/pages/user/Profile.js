@@ -1,11 +1,26 @@
 import React, { useState, useEffect, useContext } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
+import { RiderSidebar } from './Dashboard';
 import { toast } from 'react-toastify';
+import './RiderPanel.css';
 import './Profile.css';
 
 const Profile = () => {
-  const { user } = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+    return localStorage.getItem('riderSidebarCollapsed') === 'true';
+  });
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = () => { logout(); navigate('/'); };
+  const toggleSidebar = () => {
+    const next = !sidebarCollapsed;
+    setSidebarCollapsed(next);
+    localStorage.setItem('riderSidebarCollapsed', String(next));
+  };
   const [profileData, setProfileData] = useState({
     name: '',
     phone: '',
@@ -109,7 +124,10 @@ const Profile = () => {
   };
 
   return (
-    <div className="profile-page">
+    <div className={`rider-panel ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+      <RiderSidebar user={user} currentPath={location.pathname} onLogout={handleLogout} collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
+      <div className="rider-content">
+    <div className="profile-page" style={{ padding: 0, minHeight: 'auto' }}>
       {/* Animated Background Elements */}
       <div className="animated-road">
         <div className="road-line"></div>
@@ -329,6 +347,8 @@ const Profile = () => {
             </form>
           </div>
         </div>
+      </div>
+    </div>
       </div>
     </div>
   );
