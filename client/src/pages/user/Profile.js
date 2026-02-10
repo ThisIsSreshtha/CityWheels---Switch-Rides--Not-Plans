@@ -15,7 +15,7 @@ const Profile = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleLogout = () => { logout(); navigate('/'); };
+  const handleLogout = () => { logout(); /* Navigation handled by AuthContext.logout */ };
   const toggleSidebar = () => {
     const next = !sidebarCollapsed;
     setSidebarCollapsed(next);
@@ -127,228 +127,228 @@ const Profile = () => {
     <div className={`rider-panel ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       <RiderSidebar user={user} currentPath={location.pathname} onLogout={handleLogout} collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
       <div className="rider-content">
-    <div className="profile-page" style={{ padding: 0, minHeight: 'auto' }}>
-      {/* Animated Background Elements */}
-      <div className="animated-road">
-        <div className="road-line"></div>
-      </div>
-      
-      {/* Location Markers */}
-      <div className="location-marker pickup-location">
-        <div className="marker-pin"></div>
-        <div className="marker-label">📍 Pickup Point</div>
-      </div>
-      <div className="location-marker dropoff-location">
-        <div className="marker-pin"></div>
-        <div className="marker-label">📍 Drop-off Point</div>
-      </div>
-      
-      {/* Motorcycle Animation */}
-      <div className="motorcycle-container">
-        <div className="motorcycle">🏍️</div>
-      </div>
-      <div className="dust-trail"></div>
-      
-      {/* Clouds */}
-      <div className="cloud cloud1"></div>
-      <div className="cloud cloud2"></div>
-      <div className="cloud cloud3"></div>
-      
-      <div className="profile-container">
-        <div className="profile-header">
-          <h1>👤 My Profile</h1>
-          <p>Manage your personal information and documents</p>
-        </div>
-
-        {user?.isVerified ? (
-          <div className="verification-status verified">
-            <span>✅</span>
-            <span>Your profile is verified and ready to book!</span>
+        <div className="profile-page" style={{ padding: 0, minHeight: 'auto' }}>
+          {/* Animated Background Elements */}
+          <div className="animated-road">
+            <div className="road-line"></div>
           </div>
-        ) : (
-          <div className="verification-status pending">
-            <span>⚠️</span>
-            <span>Please upload your documents for verification to start booking</span>
-          </div>
-        )}
 
-        <div className="profile-card">
-          <div className="card-header">
-            <div className="card-icon info">
-              📋
-            </div>
-            <h2>Personal Information</h2>
+          {/* Location Markers */}
+          <div className="location-marker pickup-location">
+            <div className="marker-pin"></div>
+            <div className="marker-label">📍 Pickup Point</div>
           </div>
-          <form onSubmit={handleProfileSubmit}>
-            <div className="form-row">
-              <div className="input-group">
-                <label>Full Name</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={profileData.name}
-                  onChange={handleProfileChange}
-                  placeholder="Enter your full name"
-                  required
-                />
-              </div>
-              <div className="input-group">
-                <label>Phone Number</label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={profileData.phone}
-                  onChange={handleProfileChange}
-                  placeholder="Enter your phone number"
-                  required
-                />
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="input-group">
-                <label>Street Address</label>
-                <input
-                  type="text"
-                  name="street"
-                  value={profileData.street}
-                  onChange={handleProfileChange}
-                  placeholder="Enter your street address"
-                />
-              </div>
-              <div className="input-group">
-                <label>City</label>
-                <input
-                  type="text"
-                  name="city"
-                  value={profileData.city}
-                  onChange={handleProfileChange}
-                  placeholder="Enter your city"
-                />
-              </div>
-            </div>
-            <div className="form-row">
-              <div className="input-group">
-                <label>State</label>
-                <input
-                  type="text"
-                  name="state"
-                  value={profileData.state}
-                  onChange={handleProfileChange}
-                  placeholder="Enter your state"
-                />
-              </div>
-              <div className="input-group">
-                <label>Pincode</label>
-                <input
-                  type="text"
-                  name="pincode"
-                  value={profileData.pincode}
-                  onChange={handleProfileChange}
-                  placeholder="Enter your pincode"
-                />
-              </div>
-            </div>
-            <button type="submit" className="btn-submit">💾 Update Profile</button>
-          </form>
-        </div>
+          <div className="location-marker dropoff-location">
+            <div className="marker-pin"></div>
+            <div className="marker-label">📍 Drop-off Point</div>
+          </div>
 
-        <div className="documents-grid">
-          <div className="profile-card">
-            <div className="card-header">
-              <div className="card-icon aadhar">
-                🪪
-              </div>
-              <h2>Aadhar Card</h2>
+          {/* Motorcycle Animation */}
+          <div className="motorcycle-container">
+            <div className="motorcycle">🏍️</div>
+          </div>
+          <div className="dust-trail"></div>
+
+          {/* Clouds */}
+          <div className="cloud cloud1"></div>
+          <div className="cloud cloud2"></div>
+          <div className="cloud cloud3"></div>
+
+          <div className="profile-container">
+            <div className="profile-header">
+              <h1>👤 My Profile</h1>
+              <p>Manage your personal information and documents</p>
             </div>
-            {user?.documents?.aadharCard?.verified && (
-              <div className="verified-badge">
+
+            {user?.isVerified ? (
+              <div className="verification-status verified">
                 <span>✅</span>
-                <span>Verified</span>
+                <span>Your profile is verified and ready to book!</span>
+              </div>
+            ) : (
+              <div className="verification-status pending">
+                <span>⚠️</span>
+                <span>Please upload your documents for verification to start booking</span>
               </div>
             )}
-            <form onSubmit={handleAadharSubmit}>
-              <div className="input-group">
-                <label>Aadhar Number</label>
-                <input
-                  type="text"
-                  name="aadharNumber"
-                  value={documents.aadharNumber}
-                  onChange={handleDocumentChange}
-                  placeholder="Enter 12-digit Aadhar number"
-                  maxLength="12"
-                  required
-                />
-                <p className="info-text">Enter your 12-digit Aadhar card number</p>
-              </div>
-              <div className="input-group">
-                <label>Upload Aadhar Card</label>
-                <input
-                  type="file"
-                  name="aadharFile"
-                  onChange={handleDocumentChange}
-                  required
-                  accept="image/*,application/pdf"
-                />
-                <p className="info-text">Accepted formats: JPG, PNG, PDF (Max 5MB)</p>
-              </div>
-              <button type="submit" className="btn-submit">📤 Upload Aadhar</button>
-            </form>
-          </div>
 
-          <div className="profile-card">
-            <div className="card-header">
-              <div className="card-icon license">
-                🚗
+            <div className="profile-card">
+              <div className="card-header">
+                <div className="card-icon info">
+                  📋
+                </div>
+                <h2>Personal Information</h2>
               </div>
-              <h2>Driving License</h2>
+              <form onSubmit={handleProfileSubmit}>
+                <div className="form-row">
+                  <div className="input-group">
+                    <label>Full Name</label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={profileData.name}
+                      onChange={handleProfileChange}
+                      placeholder="Enter your full name"
+                      required
+                    />
+                  </div>
+                  <div className="input-group">
+                    <label>Phone Number</label>
+                    <input
+                      type="tel"
+                      name="phone"
+                      value={profileData.phone}
+                      onChange={handleProfileChange}
+                      placeholder="Enter your phone number"
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="input-group">
+                    <label>Street Address</label>
+                    <input
+                      type="text"
+                      name="street"
+                      value={profileData.street}
+                      onChange={handleProfileChange}
+                      placeholder="Enter your street address"
+                    />
+                  </div>
+                  <div className="input-group">
+                    <label>City</label>
+                    <input
+                      type="text"
+                      name="city"
+                      value={profileData.city}
+                      onChange={handleProfileChange}
+                      placeholder="Enter your city"
+                    />
+                  </div>
+                </div>
+                <div className="form-row">
+                  <div className="input-group">
+                    <label>State</label>
+                    <input
+                      type="text"
+                      name="state"
+                      value={profileData.state}
+                      onChange={handleProfileChange}
+                      placeholder="Enter your state"
+                    />
+                  </div>
+                  <div className="input-group">
+                    <label>Pincode</label>
+                    <input
+                      type="text"
+                      name="pincode"
+                      value={profileData.pincode}
+                      onChange={handleProfileChange}
+                      placeholder="Enter your pincode"
+                    />
+                  </div>
+                </div>
+                <button type="submit" className="btn-submit">💾 Update Profile</button>
+              </form>
             </div>
-            {user?.documents?.drivingLicense?.verified && (
-              <div className="verified-badge">
-                <span>✅</span>
-                <span>Verified</span>
+
+            <div className="documents-grid">
+              <div className="profile-card">
+                <div className="card-header">
+                  <div className="card-icon aadhar">
+                    🪪
+                  </div>
+                  <h2>Aadhar Card</h2>
+                </div>
+                {user?.documents?.aadharCard?.verified && (
+                  <div className="verified-badge">
+                    <span>✅</span>
+                    <span>Verified</span>
+                  </div>
+                )}
+                <form onSubmit={handleAadharSubmit}>
+                  <div className="input-group">
+                    <label>Aadhar Number</label>
+                    <input
+                      type="text"
+                      name="aadharNumber"
+                      value={documents.aadharNumber}
+                      onChange={handleDocumentChange}
+                      placeholder="Enter 12-digit Aadhar number"
+                      maxLength="12"
+                      required
+                    />
+                    <p className="info-text">Enter your 12-digit Aadhar card number</p>
+                  </div>
+                  <div className="input-group">
+                    <label>Upload Aadhar Card</label>
+                    <input
+                      type="file"
+                      name="aadharFile"
+                      onChange={handleDocumentChange}
+                      required
+                      accept="image/*,application/pdf"
+                    />
+                    <p className="info-text">Accepted formats: JPG, PNG, PDF (Max 5MB)</p>
+                  </div>
+                  <button type="submit" className="btn-submit">📤 Upload Aadhar</button>
+                </form>
               </div>
-            )}
-            <form onSubmit={handleLicenseSubmit}>
-              <div className="input-group">
-                <label>License Number</label>
-                <input
-                  type="text"
-                  name="licenseNumber"
-                  value={documents.licenseNumber}
-                  onChange={handleDocumentChange}
-                  placeholder="Enter your DL number"
-                  required
-                />
-                <p className="info-text">Enter your driving license number</p>
+
+              <div className="profile-card">
+                <div className="card-header">
+                  <div className="card-icon license">
+                    🚗
+                  </div>
+                  <h2>Driving License</h2>
+                </div>
+                {user?.documents?.drivingLicense?.verified && (
+                  <div className="verified-badge">
+                    <span>✅</span>
+                    <span>Verified</span>
+                  </div>
+                )}
+                <form onSubmit={handleLicenseSubmit}>
+                  <div className="input-group">
+                    <label>License Number</label>
+                    <input
+                      type="text"
+                      name="licenseNumber"
+                      value={documents.licenseNumber}
+                      onChange={handleDocumentChange}
+                      placeholder="Enter your DL number"
+                      required
+                    />
+                    <p className="info-text">Enter your driving license number</p>
+                  </div>
+                  <div className="input-group">
+                    <label>Expiry Date</label>
+                    <input
+                      type="date"
+                      name="expiryDate"
+                      value={documents.expiryDate}
+                      onChange={handleDocumentChange}
+                      required
+                    />
+                    <p className="info-text">License must be valid for booking</p>
+                  </div>
+                  <div className="input-group">
+                    <label>Upload License</label>
+                    <input
+                      type="file"
+                      name="licenseFile"
+                      onChange={handleDocumentChange}
+                      required
+                      accept="image/*,application/pdf"
+                    />
+                    <p className="info-text">Accepted formats: JPG, PNG, PDF (Max 5MB)</p>
+                  </div>
+                  <button type="submit" className="btn-submit">📤 Upload License</button>
+                </form>
               </div>
-              <div className="input-group">
-                <label>Expiry Date</label>
-                <input
-                  type="date"
-                  name="expiryDate"
-                  value={documents.expiryDate}
-                  onChange={handleDocumentChange}
-                  required
-                />
-                <p className="info-text">License must be valid for booking</p>
-              </div>
-              <div className="input-group">
-                <label>Upload License</label>
-                <input
-                  type="file"
-                  name="licenseFile"
-                  onChange={handleDocumentChange}
-                  required
-                  accept="image/*,application/pdf"
-                />
-                <p className="info-text">Accepted formats: JPG, PNG, PDF (Max 5MB)</p>
-              </div>
-              <button type="submit" className="btn-submit">📤 Upload License</button>
-            </form>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
       </div>
     </div>
   );

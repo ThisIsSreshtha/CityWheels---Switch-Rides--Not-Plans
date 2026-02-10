@@ -10,7 +10,7 @@ const ManageUsers = () => {
   const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem('adminSidebarCollapsed') === 'true');
   const toggleSidebar = () => setSidebarCollapsed(prev => { const next = !prev; localStorage.setItem('adminSidebarCollapsed', next); return next; });
-  const handleLogout = () => { logout(); navigate('/'); };
+  const handleLogout = () => { logout(); /* Navigation handled by AuthContext.logout */ };
 
   return (
     <div className={`admin-panel ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>

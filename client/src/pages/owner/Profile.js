@@ -34,7 +34,7 @@ const OwnerProfile = () => {
     }
   }, [user]);
 
-  const handleLogout = () => { logout(); navigate('/'); };
+  const handleLogout = () => { logout(); /* Navigation handled by AuthContext.logout */ };
 
   const toggleSidebar = () => {
     const next = !sidebarCollapsed;

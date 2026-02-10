@@ -37,7 +37,7 @@ const AdminProfile = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    // Navigation handled by AuthContext.logout
   };
 
   const handleChange = (e) => {

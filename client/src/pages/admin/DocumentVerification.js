@@ -34,7 +34,7 @@ const AdminDocumentVerification = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    // Navigation handled by AuthContext.logout
   };
 
   const handleVerify = async (userId, verifyAadhar, verifyLicense) => {
@@ -54,7 +54,7 @@ const AdminDocumentVerification = () => {
   const getVerificationStatus = (u) => {
     const aadhar = u.documents?.aadharCard;
     const license = u.documents?.drivingLicense;
-    
+
     if (aadhar?.verified && license?.verified) return 'verified';
     if (aadhar?.number || license?.number) return 'pending';
     return 'none';
@@ -289,16 +289,16 @@ const AdminDocumentVerification = () => {
 
               {/* Verify All */}
               {(selectedUser.documents?.aadharCard?.number && !selectedUser.documents?.aadharCard?.verified) &&
-               (selectedUser.documents?.drivingLicense?.number && !selectedUser.documents?.drivingLicense?.verified) && (
-                <div className="admin-verify-all">
-                  <button
-                    className="admin-btn-primary"
-                    onClick={() => handleVerify(selectedUser._id, true, true)}
-                  >
-                    ✅ Verify All Documents
-                  </button>
-                </div>
-              )}
+                (selectedUser.documents?.drivingLicense?.number && !selectedUser.documents?.drivingLicense?.verified) && (
+                  <div className="admin-verify-all">
+                    <button
+                      className="admin-btn-primary"
+                      onClick={() => handleVerify(selectedUser._id, true, true)}
+                    >
+                      ✅ Verify All Documents
+                    </button>
+                  </div>
+                )}
             </div>
           </div>
         )}

@@ -18,7 +18,7 @@ const MyBookings = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const handleLogout = () => { logout(); navigate('/'); };
+  const handleLogout = () => { logout(); /* Navigation handled by AuthContext.logout */ };
   const toggleSidebar = () => {
     const next = !sidebarCollapsed;
     setSidebarCollapsed(next);
@@ -74,100 +74,100 @@ const MyBookings = () => {
     <div className={`rider-panel ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
       <RiderSidebar user={user} currentPath={location.pathname} onLogout={handleLogout} collapsed={sidebarCollapsed} onToggle={toggleSidebar} />
       <div className="rider-content">
-    <div className="my-bookings-page" style={{ padding: 0, minHeight: 'auto' }}>
-      <div className="bookings-container">
-        <div className="bookings-header">
-          <h1>📋 My Bookings</h1>
-          <p>Track and manage all your vehicle bookings</p>
-        </div>
+        <div className="my-bookings-page" style={{ padding: 0, minHeight: 'auto' }}>
+          <div className="bookings-container">
+            <div className="bookings-header">
+              <h1>📋 My Bookings</h1>
+              <p>Track and manage all your vehicle bookings</p>
+            </div>
 
-        <div className="filter-section">
-          <button 
-            className={filter === 'all' ? 'filter-btn active' : 'filter-btn'}
-            onClick={() => setFilter('all')}
-          >
-            All Bookings
-          </button>
-          <button 
-            className={filter === 'pending' ? 'filter-btn active' : 'filter-btn'}
-            onClick={() => setFilter('pending')}
-          >
-            ⏳ Pending
-          </button>
-          <button 
-            className={filter === 'active' ? 'filter-btn active' : 'filter-btn'}
-            onClick={() => setFilter('active')}
-          >
-            ✅ Active
-          </button>
-          <button 
-            className={filter === 'completed' ? 'filter-btn active' : 'filter-btn'}
-            onClick={() => setFilter('completed')}
-          >
-            🎉 Completed
-          </button>
-          <button 
-            className={filter === 'cancelled' ? 'filter-btn active' : 'filter-btn'}
-            onClick={() => setFilter('cancelled')}
-          >
-            ❌ Cancelled
-          </button>
-        </div>
+            <div className="filter-section">
+              <button
+                className={filter === 'all' ? 'filter-btn active' : 'filter-btn'}
+                onClick={() => setFilter('all')}
+              >
+                All Bookings
+              </button>
+              <button
+                className={filter === 'pending' ? 'filter-btn active' : 'filter-btn'}
+                onClick={() => setFilter('pending')}
+              >
+                ⏳ Pending
+              </button>
+              <button
+                className={filter === 'active' ? 'filter-btn active' : 'filter-btn'}
+                onClick={() => setFilter('active')}
+              >
+                ✅ Active
+              </button>
+              <button
+                className={filter === 'completed' ? 'filter-btn active' : 'filter-btn'}
+                onClick={() => setFilter('completed')}
+              >
+                🎉 Completed
+              </button>
+              <button
+                className={filter === 'cancelled' ? 'filter-btn active' : 'filter-btn'}
+                onClick={() => setFilter('cancelled')}
+              >
+                ❌ Cancelled
+              </button>
+            </div>
 
-        {loading ? (
-          <div className="loading-spinner">🔄 Loading bookings...</div>
-        ) : filteredBookings.length === 0 ? (
-          <div className="no-bookings">
-            <div className="no-bookings-icon">🚗</div>
-            <h3>No bookings found</h3>
-            <p>Start your journey by booking a vehicle!</p>
-          </div>
-        ) : (
-          <div className="bookings-grid">
-            {filteredBookings.map(booking => (
-              <div key={booking._id} className="booking-card">
-                <div className="booking-header">
-                  <div className="vehicle-info">
-                    <h3>{booking.vehicle?.name || 'Vehicle'}</h3>
-                    <p className="vehicle-type">{booking.vehicle?.type || 'N/A'}</p>
-                  </div>
-                  {getStatusBadge(booking.status)}
-                </div>
-                
-                <div className="booking-details">
-                  <div className="detail-row">
-                    <span className="label">📅 Start Date:</span>
-                    <span className="value">{formatDate(booking.startDate)}</span>
-                  </div>
-                  <div className="detail-row">
-                    <span className="label">📅 End Date:</span>
-                    <span className="value">{formatDate(booking.endDate)}</span>
-                  </div>
-                  <div className="detail-row">
-                    <span className="label">📍 Pickup:</span>
-                    <span className="value">{booking.pickupLocation || 'N/A'}</span>
-                  </div>
-                  <div className="detail-row">
-                    <span className="label">📍 Drop-off:</span>
-                    <span className="value">{booking.dropoffLocation || 'N/A'}</span>
-                  </div>
-                  <div className="detail-row total">
-                    <span className="label">💰 Total Amount:</span>
-                    <span className="value">₹{booking.totalAmount || 0}</span>
-                  </div>
-                </div>
-
-                {booking.status === 'pending' && (
-                  <div className="booking-actions">
-                    <button className="btn-cancel">Cancel Booking</button>
-                  </div>
-                )}
+            {loading ? (
+              <div className="loading-spinner">🔄 Loading bookings...</div>
+            ) : filteredBookings.length === 0 ? (
+              <div className="no-bookings">
+                <div className="no-bookings-icon">🚗</div>
+                <h3>No bookings found</h3>
+                <p>Start your journey by booking a vehicle!</p>
               </div>
-            ))}
+            ) : (
+              <div className="bookings-grid">
+                {filteredBookings.map(booking => (
+                  <div key={booking._id} className="booking-card">
+                    <div className="booking-header">
+                      <div className="vehicle-info">
+                        <h3>{booking.vehicle?.name || 'Vehicle'}</h3>
+                        <p className="vehicle-type">{booking.vehicle?.type || 'N/A'}</p>
+                      </div>
+                      {getStatusBadge(booking.status)}
+                    </div>
+
+                    <div className="booking-details">
+                      <div className="detail-row">
+                        <span className="label">📅 Start Date:</span>
+                        <span className="value">{formatDate(booking.startDate)}</span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="label">📅 End Date:</span>
+                        <span className="value">{formatDate(booking.endDate)}</span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="label">📍 Pickup:</span>
+                        <span className="value">{booking.pickupLocation || 'N/A'}</span>
+                      </div>
+                      <div className="detail-row">
+                        <span className="label">📍 Drop-off:</span>
+                        <span className="value">{booking.dropoffLocation || 'N/A'}</span>
+                      </div>
+                      <div className="detail-row total">
+                        <span className="label">💰 Total Amount:</span>
+                        <span className="value">₹{booking.totalAmount || 0}</span>
+                      </div>
+                    </div>
+
+                    {booking.status === 'pending' && (
+                      <div className="booking-actions">
+                        <button className="btn-cancel">Cancel Booking</button>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-      </div>
-    </div>
+        </div>
       </div>
     </div>
   );

@@ -22,6 +22,39 @@ export const AuthProvider = ({ children }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
+  // Listen for storage events (logout in another tab)
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'token' && !e.newValue) {
+        // Token was removed in another tab
+        setToken(null);
+        setUser(null);
+        delete axios.defaults.headers.common['Authorization'];
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  // Validate token on navigation/page load
+  useEffect(() => {
+    const validateToken = () => {
+      const storedToken = localStorage.getItem('token');
+      if (!storedToken && user) {
+        // Token was removed but user state still exists
+        setUser(null);
+        setToken(null);
+      }
+    };
+
+    // Check on mount and when page becomes visible
+    validateToken();
+    document.addEventListener('visibilitychange', validateToken);
+
+    return () => document.removeEventListener('visibilitychange', validateToken);
+  }, [user]);
+
   const loadUser = async () => {
     try {
       const res = await axios.get('/api/auth/me');
@@ -67,10 +100,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    // Clear all auth data
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    // Set session expired flag for login message
+    localStorage.setItem('sessionExpired', 'true');
     setToken(null);
     setUser(null);
     delete axios.defaults.headers.common['Authorization'];
+
+    // Force full page reload to login to prevent back button access
+    window.location.replace('/login');
   };
 
   return (

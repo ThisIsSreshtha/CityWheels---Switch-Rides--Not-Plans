@@ -36,7 +36,7 @@ const AdminDashboard = () => {
     }
   };
 
-  const handleLogout = () => { logout(); navigate('/'); };
+  const handleLogout = () => { logout(); /* Navigation handled by AuthContext.logout */ };
 
   return (
     <div className={`admin-panel ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
