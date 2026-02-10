@@ -172,6 +172,7 @@ export const Sidebar = ({ user, currentPath, onLogout, collapsed, onToggle }) =>
       links: [
         { to: '/owner/documents', icon: 'ðŸ“„', label: 'Documents' },
         { to: '/owner/profile', icon: 'ðŸ‘¤', label: 'Profile' },
+        { to: '/owner/reports', icon: 'í³¢', label: 'Reports' },
       ]
     }
   ];

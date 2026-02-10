@@ -213,3 +213,59 @@ router.post('/documents/business', protect, authorize('owner'), upload.single('b
 });
 
 module.exports = router;
+
+// ==================== REPORTS ====================
+
+// @route   POST /api/owner/reports
+// @desc    Create a new report
+// @access  Private/Owner
+router.post('/reports', protect, authorize('owner'), async (req, res) => {
+  try {
+    const Report = require('../models/Report');
+    const { reportType, subject, description, priority } = req.body;
+
+    if (!reportType || !subject || !description) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide report type, subject, and description'
+      });
+    }
+
+    const report = await Report.create({
+      owner: req.user.id,
+      reportType,
+      subject,
+      description,
+      priority: priority || 'medium',
+      status: 'pending'
+    });
+
+    res.status(201).json({
+      success: true,
+      message: 'Report submitted successfully',
+      data: report
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// @route   GET /api/owner/reports
+// @desc    Get all reports by logged-in owner
+// @access  Private/Owner
+router.get('/reports', protect, authorize('owner'), async (req, res) => {
+  try {
+    const Report = require('../models/Report');
+    const reports = await Report.find({ owner: req.user.id })
+      .sort('-createdAt')
+      .populate('resolvedBy', 'name');
+
+    res.json({
+      success: true,
+      count: reports.length,
+      data: reports
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});

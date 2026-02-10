@@ -28,12 +28,14 @@ import ManageUsers from './pages/admin/ManageUsers';
 import ManageVehicles from './pages/admin/ManageVehicles';
 import ManageBookings from './pages/admin/ManageBookings';
 import Reports from './pages/admin/Reports';
+import ManageReports from './pages/admin/ManageReports';
 
 // Owner Pages
 import OwnerDashboard from './pages/owner/Dashboard';
 import OwnerMyRentals from './pages/owner/MyRentals';
 import OwnerDocuments from './pages/owner/DocumentVerification';
 import OwnerProfile from './pages/owner/Profile';
+import OwnerReports from './pages/owner/Reports';
 
 // Components
 import Navbar from './components/Navbar';
@@ -48,7 +50,7 @@ function App() {
         <div className="App">
           <Navbar />
           <ToastContainer position="top-right" autoClose={3000} />
-          
+
           <Routes>
             {/* Public Routes */}
             <Route path="/" element={<Home />} />
@@ -72,12 +74,14 @@ function App() {
             <Route path="/admin/vehicles" element={<AdminRoute><ManageVehicles /></AdminRoute>} />
             <Route path="/admin/bookings" element={<AdminRoute><ManageBookings /></AdminRoute>} />
             <Route path="/admin/reports" element={<AdminRoute><Reports /></AdminRoute>} />
+            <Route path="/admin/owner-reports" element={<AdminRoute><ManageReports /></AdminRoute>} />
 
             {/* Owner Routes */}
             <Route path="/owner/dashboard" element={<OwnerRoute><OwnerDashboard /></OwnerRoute>} />
             <Route path="/owner/rentals" element={<OwnerRoute><OwnerMyRentals /></OwnerRoute>} />
             <Route path="/owner/documents" element={<OwnerRoute><OwnerDocuments /></OwnerRoute>} />
             <Route path="/owner/profile" element={<OwnerRoute><OwnerProfile /></OwnerRoute>} />
+            <Route path="/owner/reports" element={<OwnerRoute><OwnerReports /></OwnerRoute>} />
 
             {/* 404 */}
             <Route path="*" element={<Navigate to="/" />} />

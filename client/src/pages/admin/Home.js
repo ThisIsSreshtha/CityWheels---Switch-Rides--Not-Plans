@@ -230,6 +230,7 @@ export const AdminSidebar = ({ user, currentPath, onLogout, collapsed, onToggle 
         { to: '/admin/vehicles', icon: '🚗', label: 'Manage Vehicles' },
         { to: '/admin/bookings', icon: '📋', label: 'Manage Bookings' },
         { to: '/admin/document-verification', icon: '📄', label: 'Doc Verification' },
+        { to: '/admin/owner-reports', icon: '📢', label: 'Manage Reports' },
       ]
     },
     {
