@@ -128,8 +128,8 @@ const Vehicles = () => {
                 <div key={vehicle._id} className="vehicle-card">
                   <div className="vehicle-image-container">
                     {vehicle.images && vehicle.images.length > 0 ? (
-                      <img 
-                        src={`http://localhost:5000${vehicle.images[0]}`} 
+                      <img
+                        src={`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${vehicle.images[0]}`}
                         alt={vehicle.name}
                         onError={(e) => {
                           e.target.style.display = 'none';
@@ -137,7 +137,7 @@ const Vehicles = () => {
                         }}
                       />
                     ) : null}
-                    <div className="placeholder-image" style={vehicle.images && vehicle.images.length > 0 ? {display: 'none'} : {}}>
+                    <div className="placeholder-image" style={vehicle.images && vehicle.images.length > 0 ? { display: 'none' } : {}}>
                       <span className="vehicle-emoji">{getVehicleIcon(vehicle.type)}</span>
                       <span className="vehicle-type-text">{vehicle.type}</span>
                     </div>
@@ -146,13 +146,13 @@ const Vehicles = () => {
                       Available
                     </div>
                   </div>
-                  
+
                   <div className="vehicle-content">
                     <div className="vehicle-header">
                       <h3>{vehicle.name}</h3>
                       <span className="vehicle-category">{vehicle.category}</span>
                     </div>
-                    
+
                     <div className="vehicle-details">
                       <p className="vehicle-brand">
                         <span className="detail-icon">🏷️</span>
@@ -162,7 +162,7 @@ const Vehicles = () => {
                         <span className="detail-icon">📍</span>
                         {vehicle.location?.city || 'N/A'}, {vehicle.location?.state || 'N/A'}
                       </p>
-                      
+
                       {vehicle.specifications && (
                         <div className="vehicle-specs">
                           {vehicle.specifications.seatingCapacity && (
@@ -183,7 +183,7 @@ const Vehicles = () => {
                         </div>
                       )}
                     </div>
-                    
+
                     <div className="pricing-section">
                       <div className="price-item">
                         <span className="price-label">Hourly</span>
