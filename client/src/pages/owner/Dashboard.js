@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+ï»¿import React, { useState, useEffect, useContext } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
@@ -172,7 +172,7 @@ export const Sidebar = ({ user, currentPath, onLogout, collapsed, onToggle }) =>
       links: [
         { to: '/owner/documents', icon: 'ðŸ“„', label: 'Documents' },
         { to: '/owner/profile', icon: 'ðŸ‘¤', label: 'Profile' },
-        { to: '/owner/reports', icon: 'í³¢', label: 'Reports' },
+        { to: '/owner/reports', icon: 'ðŸ“Š', label: 'Reports' },
       ]
     }
   ];
@@ -246,3 +246,4 @@ export const Sidebar = ({ user, currentPath, onLogout, collapsed, onToggle }) =>
 };
 
 export default Dashboard;
+

@@ -1,13 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { AuthContext } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
+import { Sidebar } from './Dashboard';
 import './OwnerPanel.css';
 
 const Reports = () => {
+    const { user, logout } = useContext(AuthContext);
+    const location = useLocation();
+    const navigate = useNavigate();
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [expandedReport, setExpandedReport] = useState(null);
+    const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
+        return localStorage.getItem('ownerSidebarCollapsed') === 'true';
+    });
 
     const [formData, setFormData] = useState({
         reportType: 'vehicle_issue',
@@ -19,6 +28,16 @@ const Reports = () => {
     useEffect(() => {
         fetchReports();
     }, []);
+
+    const handleLogout = () => {
+        logout();
+    };
+
+    const toggleSidebar = () => {
+        const next = !sidebarCollapsed;
+        setSidebarCollapsed(next);
+        localStorage.setItem('ownerSidebarCollapsed', String(next));
+    };
 
     const fetchReports = async () => {
         try {
@@ -86,7 +105,14 @@ const Reports = () => {
 
     if (loading) {
         return (
-            <div className="owner-panel">
+            <div className={`owner-panel ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+                <Sidebar
+                    user={user}
+                    currentPath={location.pathname}
+                    onLogout={handleLogout}
+                    collapsed={sidebarCollapsed}
+                    onToggle={toggleSidebar}
+                />
                 <div className="owner-content">
                     <div className="loading-spinner">
                         <div className="spinner"></div>
@@ -98,7 +124,14 @@ const Reports = () => {
     }
 
     return (
-        <div className="owner-panel">
+        <div className={`owner-panel ${sidebarCollapsed ? 'sidebar-collapsed' : ''}`}>
+            <Sidebar
+                user={user}
+                currentPath={location.pathname}
+                onLogout={handleLogout}
+                collapsed={sidebarCollapsed}
+                onToggle={toggleSidebar}
+            />
             <div className="owner-content">
                 <h1 className="page-title">📢 Reports</h1>
                 <p className="page-subtitle">Submit reports about vehicle issues or customer misbehavior</p>
