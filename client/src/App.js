@@ -46,7 +46,7 @@ import OwnerRoute from './components/OwnerRoute';
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <div className="App">
           <Navbar />
           <ToastContainer position="top-right" autoClose={3000} />

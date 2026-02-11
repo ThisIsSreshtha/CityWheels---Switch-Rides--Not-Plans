@@ -18,7 +18,7 @@ const DocumentVerification = () => {
   const [licenseData, setLicenseData] = useState({ licenseNumber: '', expiryDate: '', licenseFile: null });
   const [businessData, setBusinessData] = useState({ gstNumber: '', businessDoc: null });
 
-  const handleLogout = () => { logout(); /* Navigation handled by AuthContext.logout */ };
+  const handleLogout = () => { logout(); navigate('/'); };
 
   const toggleSidebar = () => {
     const next = !sidebarCollapsed;

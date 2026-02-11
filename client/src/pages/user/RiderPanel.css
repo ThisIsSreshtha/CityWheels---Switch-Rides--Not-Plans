@@ -24,7 +24,7 @@
   display: flex;
   flex-direction: column;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 1px 0 0 rgba(255, 255, 255, 0.1), 4px 0 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 1px 0 0 rgba(255,255,255,0.1), 4px 0 16px rgba(0, 0, 0, 0.15);
   overflow: hidden;
   border-right: 1px solid rgba(96, 165, 250, 0.3);
 }
@@ -106,19 +106,19 @@
   font-weight: 500;
 }
 
-/* ===== Hamburger Toggle Button ===== */
+/* ===== Three-Dot Toggle Button ===== */
 .rider-sidebar-dots {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
   background: rgba(255, 255, 255, 0.15);
   border: 1px solid rgba(255, 255, 255, 0.25);
   border-radius: 8px;
-  width: 36px;
-  height: 36px;
-  min-width: 36px;
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
   cursor: pointer;
   transition: all 0.25s ease;
   padding: 0;
@@ -135,10 +135,10 @@
 }
 
 .rider-sidebar-dots .dot {
-  width: 18px;
-  height: 2px;
-  border-radius: 2px;
-  background: rgba(255, 255, 255, 0.85);
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
   transition: all 0.25s ease;
   display: block;
 }
@@ -147,16 +147,14 @@
   background: #ffffff;
 }
 
-/* When collapsed, keep the hamburger button beside the header */
+/* When collapsed, center the dots button */
 .rider-sidebar.collapsed .rider-sidebar-dots {
-  margin: 0;
+  margin: 0 auto;
 }
-
 .rider-sidebar.collapsed .rider-sidebar-header {
-  flex-direction: row;
-  padding: 18px 16px;
-  gap: 8px;
-  justify-content: center;
+  flex-direction: column;
+  padding: 12px 8px;
+  gap: 6px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
 }
 
@@ -172,11 +170,9 @@
 .rider-sidebar-nav::-webkit-scrollbar {
   width: 4px;
 }
-
 .rider-sidebar-nav::-webkit-scrollbar-track {
   background: transparent;
 }
-
 .rider-sidebar-nav::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.25);
   border-radius: 4px;
@@ -443,9 +439,7 @@
 }
 
 @keyframes rider-spin {
-  to {
-    transform: rotate(360deg);
-  }
+  to { transform: rotate(360deg); }
 }
 
 /* ===== Mobile Responsive ===== */
