@@ -1,11 +1,12 @@
 .home {
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 .hero {
   background: linear-gradient(135deg, #fffbf0 0%, #fef5e7 50%, #fff8e8 100%);
   color: #333;
-  padding: 100px 0 200px;
+  padding: clamp(60px, 10vw, 100px) 0 clamp(120px, 18vw, 200px);
   text-align: center;
   position: relative;
   overflow: hidden;
@@ -638,38 +639,55 @@
 }
 
 .hero-content h1 {
-  font-size: 48px;
-  margin-bottom: 20px;
+  font-size: clamp(28px, 5vw, 48px);
+  margin-bottom: clamp(12px, 2vw, 20px);
+  line-height: 1.2;
+  padding: 0 16px;
 }
 
 .hero-subtitle {
-  font-size: 20px;
-  max-width: 700px;
-  margin: 0 auto 40px;
+  font-size: clamp(14px, 2.2vw, 20px);
+  max-width: min(700px, 90vw);
+  margin: 0 auto clamp(20px, 4vw, 40px);
   opacity: 0.9;
+  padding: 0 16px;
+  line-height: 1.6;
 }
 
 .hero-buttons {
   display: flex;
-  gap: 14px;
+  gap: clamp(8px, 1.5vw, 14px);
   justify-content: center;
   flex-wrap: wrap;
+  padding: 0 16px;
 }
 
 .btn-large {
-  padding: 12px 28px;
-  font-size: 15px;
+  padding: clamp(10px, 1.5vw, 12px) clamp(20px, 3vw, 28px);
+  font-size: clamp(13px, 1.5vw, 15px);
   font-weight: 600;
   letter-spacing: 0.3px;
   border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-large:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .features,
 .vehicle-types,
 .how-it-works {
-  padding: 60px 0;
+  padding: clamp(30px, 6vw, 60px) 0;
   background: linear-gradient(to bottom, #fffbf0 0%, #fef5e7 50%, #fff8e8 100%);
   position: relative;
+}
+
+.features .container,
+.vehicle-types .container,
+.how-it-works .container {
+  padding: 0 clamp(16px, 3vw, 20px);
 }
 
 .features::before,
@@ -688,8 +706,8 @@
 
 .section-title {
   text-align: center;
-  font-size: 32px;
-  margin-bottom: 40px;
+  font-size: clamp(22px, 4vw, 32px);
+  margin-bottom: clamp(24px, 4vw, 40px);
   color: var(--dark-color);
   font-weight: 800;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
@@ -765,7 +783,7 @@
 .feature-card,
 .vehicle-type-card {
   text-align: center;
-  padding: 28px 24px;
+  padding: clamp(20px, 3vw, 28px) clamp(16px, 2.5vw, 24px);
   background: linear-gradient(135deg, #ffffff 0%, #fffdf7 100%);
   border-radius: 16px;
   box-shadow: 0 6px 20px rgba(255, 152, 0, 0.12);
@@ -827,8 +845,8 @@
 }
 
 .feature-icon {
-  font-size: 50px;
-  margin-bottom: 18px;
+  font-size: clamp(36px, 5vw, 50px);
+  margin-bottom: clamp(12px, 2vw, 18px);
   transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   display: inline-block;
   filter: drop-shadow(0 3px 10px rgba(102, 126, 234, 0.25));
@@ -876,8 +894,8 @@
 }
 
 .vehicle-icon {
-  font-size: 65px;
-  margin: 18px 0 22px;
+  font-size: clamp(45px, 7vw, 65px);
+  margin: clamp(12px, 2vw, 18px) 0 clamp(14px, 2.5vw, 22px);
   display: inline-block;
   animation: vehicleBounce 2s ease-in-out infinite;
   filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.12));
@@ -967,56 +985,181 @@
 
 .steps {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  gap: clamp(20px, 4vw, 40px);
 }
 
 .step {
   text-align: center;
+  padding: clamp(16px, 2vw, 0px);
 }
 
 .step-number {
-  width: 60px;
-  height: 60px;
+  width: clamp(48px, 6vw, 60px);
+  height: clamp(48px, 6vw, 60px);
   border-radius: 50%;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
-  font-size: 28px;
+  font-size: clamp(22px, 3vw, 28px);
   font-weight: bold;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 0 auto 20px;
+  margin: 0 auto clamp(12px, 2vw, 20px);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.step:hover .step-number {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
 }
 
 .step h3 {
-  font-size: 22px;
+  font-size: clamp(18px, 2.5vw, 22px);
   margin-bottom: 10px;
   color: var(--dark-color);
+}
+
+.step p {
+  font-size: clamp(13px, 1.5vw, 15px);
+  line-height: 1.6;
+  color: #4a5568;
 }
 
 .footer {
   background: var(--dark-color);
   color: white;
   text-align: center;
-  padding: 40px 0;
-  margin-top: 80px;
+  padding: clamp(24px, 4vw, 40px) clamp(16px, 3vw, 20px);
+  margin-top: clamp(40px, 8vw, 80px);
 }
 
 .footer p {
   margin: 5px 0;
+  font-size: clamp(13px, 1.5vw, 16px);
+}
+
+/* ========== Responsive: Hero Animations ========== */
+@media (max-width: 1024px) {
+  .hero .fare-display {
+    top: 20%;
+    right: 15%;
+  }
+
+  .hero .traffic-signal {
+    display: none;
+  }
 }
 
 @media (max-width: 768px) {
-  .hero-content h1 {
-    font-size: 32px;
+  .hero {
+    padding: 50px 0 140px;
   }
 
-  .hero-subtitle {
-    font-size: 16px;
+  .hero .animated-road {
+    height: 100px;
   }
 
-  .section-title {
-    font-size: 28px;
+  .hero .road-surface {
+    height: 60px;
+    bottom: 20px;
+  }
+
+  .hero .road-edge-top {
+    bottom: 80px;
+  }
+
+  .hero .road-edge-bottom {
+    bottom: 20px;
+  }
+
+  .hero .road-line {
+    bottom: 50px;
+  }
+
+  .hero .car {
+    font-size: 5rem;
+  }
+
+  .hero .location-marker {
+    display: none;
+  }
+
+  .hero .fare-display {
+    display: none;
+  }
+
+  .hero .traffic-signal {
+    display: none;
+  }
+
+  .hero .thought-cloud-container {
+    display: none;
+  }
+
+  .hero .waiting-passenger,
+  .hero .dropped-passenger,
+  .hero .verified-badge-pickup {
+    display: none;
+  }
+
+  .hero .cloud {
+    display: none;
+  }
+
+  .grid-4 {
+    grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+  }
+
+  .grid-3 {
+    grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .hero {
+    padding: 40px 0 120px;
+  }
+
+  .hero .animated-road {
+    height: 80px;
+  }
+
+  .hero .road-surface {
+    height: 45px;
+    bottom: 15px;
+  }
+
+  .hero .road-line {
+    bottom: 38px;
+  }
+
+  .hero .car {
+    font-size: 3.5rem;
+  }
+
+  .hero .vehicle-container {
+    bottom: 20px;
+  }
+
+  .hero .dust-trail {
+    display: none;
+  }
+
+  .grid-4,
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+
+  .feature-card,
+  .vehicle-type-card {
+    padding: 20px 16px;
+  }
+
+  .step-number {
+    width: 44px;
+    height: 44px;
+    font-size: 20px;
   }
 }

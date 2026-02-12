@@ -5,7 +5,8 @@
 }
 
 .dashboard h1 {
-  margin-bottom: 30px;
+  margin-bottom: clamp(16px, 3vw, 30px);
+  font-size: clamp(20px, 3.5vw, 28px);
   color: var(--dark-color);
   background: linear-gradient(135deg, #ff9800 0%, #ff6f00 100%);
   -webkit-background-clip: text;
@@ -16,35 +17,43 @@
 .stat-card {
   background: linear-gradient(135deg, #ff9800 0%, #ff6f00 100%);
   color: white;
-  padding: 30px;
+  padding: clamp(16px, 3vw, 30px);
   border-radius: 10px;
   text-align: center;
   box-shadow: 0 6px 20px rgba(255, 152, 0, 0.3);
   border: 2px solid rgba(255, 193, 7, 0.3);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(255, 152, 0, 0.4);
 }
 
 .stat-card h3 {
-  font-size: 16px;
-  margin-bottom: 15px;
+  font-size: clamp(13px, 1.8vw, 16px);
+  margin-bottom: clamp(8px, 1.5vw, 15px);
   opacity: 0.9;
 }
 
 .stat-number {
-  font-size: 48px;
+  font-size: clamp(28px, 5vw, 48px);
   font-weight: bold;
 }
 
 .bookings-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
+  margin-top: clamp(12px, 2vw, 20px);
 }
 
 .bookings-table th,
 .bookings-table td {
-  padding: 12px;
+  padding: clamp(8px, 1.2vw, 12px);
   text-align: left;
   border-bottom: 1px solid var(--border-color);
+  font-size: clamp(11px, 1.4vw, 14px);
+  white-space: nowrap;
 }
 
 .bookings-table th {
@@ -87,7 +96,22 @@
 
 .quick-actions {
   display: flex;
-  gap: 15px;
-  margin-top: 30px;
+  gap: clamp(8px, 1.5vw, 15px);
+  margin-top: clamp(16px, 3vw, 30px);
   flex-wrap: wrap;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .bookings-table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@media (max-width: 480px) {
+  .quick-actions {
+    flex-direction: column;
+  }
 }

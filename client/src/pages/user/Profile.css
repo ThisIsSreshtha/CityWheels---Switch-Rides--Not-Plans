@@ -1,7 +1,7 @@
 .profile-page {
   background: linear-gradient(120deg, #fffbf0 0%, #fef5e7 50%, #fff8e8 100%);
   min-height: 100vh;
-  padding: 60px 20px;
+  padding: clamp(40px, 6vw, 60px) clamp(12px, 3vw, 20px);
   position: relative;
   overflow: hidden;
 }
@@ -226,7 +226,7 @@
 
 .profile-header {
   text-align: center;
-  margin-bottom: 50px;
+  margin-bottom: clamp(24px, 5vw, 50px);
   animation: fadeInDown 0.8s ease-out;
 }
 
@@ -243,7 +243,7 @@
 
 .profile-header h1 {
   color: #1a365d;
-  font-size: 3rem;
+  font-size: clamp(1.75rem, 5vw, 3rem);
   font-weight: 800;
   margin-bottom: 15px;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
@@ -252,7 +252,7 @@
 
 .profile-header p {
   color: #2d3748;
-  font-size: 1.2rem;
+  font-size: clamp(0.9rem, 1.8vw, 1.2rem);
   font-weight: 500;
 }
 
@@ -303,10 +303,10 @@
 
 .profile-card {
   background: linear-gradient(135deg, #ffffff 0%, #fffdf7 100%);
-  border-radius: 24px;
-  padding: 40px;
+  border-radius: clamp(16px, 2.5vw, 24px);
+  padding: clamp(20px, 4vw, 40px);
   box-shadow: 0 20px 60px rgba(255, 152, 0, 0.15);
-  margin-bottom: 35px;
+  margin-bottom: clamp(20px, 3vw, 35px);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   border: 2px solid rgba(255, 193, 7, 0.3);
   backdrop-filter: blur(10px);
@@ -395,7 +395,7 @@
 
 .card-header h2 {
   color: #2d3748;
-  font-size: 1.75rem;
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
   font-weight: 700;
   margin: 0;
   letter-spacing: -0.5px;
@@ -403,9 +403,9 @@
 
 .form-row {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 25px;
-  margin-bottom: 25px;
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
+  gap: clamp(12px, 2.5vw, 25px);
+  margin-bottom: clamp(12px, 2.5vw, 25px);
 }
 
 .input-group {
@@ -531,9 +531,9 @@
 
 .documents-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-  gap: 35px;
-  margin-top: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));
+  gap: clamp(16px, 3vw, 35px);
+  margin-top: clamp(20px, 4vw, 40px);
 }
 
 .verified-badge {
@@ -569,12 +569,12 @@
 }
 
 @media (max-width: 768px) {
-  .profile-header h1 {
-    font-size: 2.25rem;
+  .profile-card {
+    padding: 20px;
   }
 
-  .profile-card {
-    padding: 25px;
+  .profile-card:hover {
+    transform: translateY(-4px) scale(1.01);
   }
 
   .form-row,
@@ -584,11 +584,51 @@
 
   .card-header {
     flex-direction: row;
+    gap: 12px;
   }
 
   .card-icon {
-    width: 55px;
-    height: 55px;
-    font-size: 1.75rem;
+    width: 50px;
+    height: 50px;
+    font-size: 1.5rem;
+  }
+
+  /* Hide decorative animations on mobile */
+  .animated-road,
+  .road-line,
+  .location-marker,
+  .motorcycle-container,
+  .dust-trail,
+  .cloud {
+    display: none;
+  }
+
+  .verification-status {
+    padding: 14px 16px;
+    font-size: 0.95rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-card {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .card-header {
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+  }
+
+  .input-group input,
+  .input-group select,
+  .input-group textarea {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+  }
+
+  .btn-submit {
+    padding: 12px 24px;
+    font-size: 1rem;
   }
 }

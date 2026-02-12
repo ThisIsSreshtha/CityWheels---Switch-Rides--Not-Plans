@@ -6,10 +6,13 @@ const OwnerRoute = ({ children }) => {
   const { isAuthenticated, isOwner, loading } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  // CRITICAL: Synchronous token check
+  const token = localStorage.getItem('token');
+
   useEffect(() => {
     // Validate token on mount and navigation
-    const token = localStorage.getItem('token');
-    if (!token && !loading) {
+    const currentToken = localStorage.getItem('token');
+    if (!currentToken && !loading) {
       // No token, set session expired and redirect
       localStorage.setItem('sessionExpired', 'true');
       navigate('/login', { replace: true });
@@ -18,6 +21,12 @@ const OwnerRoute = ({ children }) => {
 
   if (loading) {
     return <div style={{ textAlign: 'center', padding: '50px' }}>Loading...</div>;
+  }
+
+  // Immediate check - if no token, redirect
+  if (!token) {
+    localStorage.setItem('sessionExpired', 'true');
+    return <Navigate to="/login" replace />;
   }
 
   if (!isAuthenticated) {

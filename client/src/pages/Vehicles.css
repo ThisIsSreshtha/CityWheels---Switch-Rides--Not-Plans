@@ -1,8 +1,8 @@
-/* ===== Vehicles Page - Professional Clean Theme ===== */
+/* ===== Vehicles Page - Fully Responsive ===== */
 
 .vehicles-page {
   min-height: 100vh;
-  padding: 80px 20px 40px;
+  padding: clamp(70px, 10vw, 80px) clamp(12px, 3vw, 20px) clamp(24px, 4vw, 40px);
   background: #f0f2f5;
 }
 
@@ -14,11 +14,11 @@
 /* Page Header */
 .page-header {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: clamp(16px, 3vw, 28px);
 }
 
 .page-header h1 {
-  font-size: 28px;
+  font-size: clamp(22px, 3.5vw, 28px);
   margin-bottom: 6px;
   color: #1e293b;
   font-weight: 700;
@@ -27,7 +27,7 @@
 
 .page-header p {
   color: #64748b;
-  font-size: 14px;
+  font-size: clamp(13px, 1.5vw, 14px);
 }
 
 /* ===== Filters Section ===== */
@@ -37,10 +37,10 @@
 
 .filter-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(min(170px, 100%), 1fr));
+  gap: clamp(8px, 1vw, 10px);
   background: #ffffff;
-  padding: 16px;
+  padding: clamp(12px, 2vw, 16px);
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
   border: 1px solid #e2e8f0;
@@ -141,8 +141,8 @@
 /* ===== Vehicles Grid ===== */
 .vehicles-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+  gap: clamp(12px, 2vw, 16px);
   animation: fadeIn 0.4s ease-out;
 }
 
@@ -171,7 +171,7 @@
 
 /* ===== Vehicle Image / Icon Area ===== */
 .vehicle-image-container {
-  height: 140px;
+  height: clamp(120px, 15vw, 140px);
   background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
   position: relative;
   overflow: hidden;
@@ -404,34 +404,39 @@
 /* ===== Responsive Design ===== */
 @media (max-width: 1200px) {
   .vehicles-grid {
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
   }
 }
 
 @media (max-width: 768px) {
   .vehicles-page {
-    padding: 70px 12px 24px;
-  }
-
-  .page-header h1 {
-    font-size: 22px;
+    padding: 68px 12px 24px;
   }
 
   .filter-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
     padding: 12px;
     gap: 8px;
   }
 
   .vehicles-grid {
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr));
     gap: 12px;
+  }
+
+  .vehicle-card:hover {
+    transform: translateY(-2px);
+  }
+
+  .pricing-section {
+    padding: 8px;
+    gap: 4px;
   }
 }
 
 @media (max-width: 480px) {
-  .page-header h1 {
-    font-size: 20px;
+  .vehicles-page {
+    padding: 64px 8px 20px;
   }
 
   .filter-grid {
@@ -443,6 +448,23 @@
   }
 
   .vehicle-image-container {
-    height: 120px;
+    height: 130px;
+  }
+
+  .vehicle-content {
+    padding: 12px;
+  }
+
+  .vehicle-header h3 {
+    font-size: 14px;
+  }
+
+  .price-value {
+    font-size: 14px;
+  }
+
+  .view-details-btn {
+    padding: 10px 12px;
+    font-size: 13px;
   }
 }

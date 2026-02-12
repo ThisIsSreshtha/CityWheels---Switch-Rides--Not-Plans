@@ -37,7 +37,7 @@ router.post('/register', [
       role: allowedRole
     });
 
-    const token = generateToken(user._id);
+    const token = generateToken(user._id, user.tokenVersion);
 
     res.status(201).json({
       success: true,
@@ -101,7 +101,7 @@ router.post('/login', async (req, res) => {
       });
     }
 
-    const token = generateToken(user._id);
+    const token = generateToken(user._id, user.tokenVersion);
 
     res.json({
       success: true,
@@ -134,10 +134,32 @@ const { protect } = require('../middleware/auth');
 router.get('/me', protect, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
-    
+
     res.json({
       success: true,
       data: user
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+// @route   POST /api/auth/logout
+// @desc    Logout user and invalidate token
+// @access  Private
+router.post('/logout', protect, async (req, res) => {
+  try {
+    // Increment tokenVersion to invalidate all existing tokens
+    await User.findByIdAndUpdate(req.user.id, {
+      $inc: { tokenVersion: 1 }
+    });
+
+    res.json({
+      success: true,
+      message: 'Logged out successfully'
     });
   } catch (error) {
     res.status(500).json({
