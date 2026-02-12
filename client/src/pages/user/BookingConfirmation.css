@@ -1,69 +1,60 @@
-/* Three.js Background */
+/* ================================================================ */
+/*  BookingConfirmation.css - Simplified for Tailwind              */
+/* ================================================================ */
+
+/* Three.js Background Container  */
 .bkc-three-bg {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.6;
+}
+
+.bkc-three-bg canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 /* Print Styles */
 @media print {
 
-  /* Hide non-printable elements */
   .no-print,
-  .bkc-three-bg {
+  .bkc-three-bg,
+  button,
+  .upi-app-btn {
     display: none !important;
   }
 
-  /* Ensure print content is visible */
   body {
     background: white !important;
   }
 
-  /* Remove page breaks inside elements */
-  .print-receipt,
-  .print-receipt * {
-    page-break-inside: avoid;
-  }
-
-  /* Set print margins */
   @page {
     margin: 1cm;
   }
 
-  /* Reset backgrounds for print */
-  * {
-    background: white !important;
-    color: black !important;
-  }
-
-  /* Keep borders visible */
-  table,
-  th,
-  td {
-    border-color: #999 !important;
-  }
-
-  /* Ensure QR code is visible in print */
-  svg {
-    display: block !important;
+  .bkc-detail-card {
+    page-break-inside: avoid;
+    box-shadow: none !important;
   }
 }
 
-/* Animations */
-@keyframes bkcSpin {
+/* Simple spin animation for loading states */
+@keyframes spin {
   to {
     transform: rotate(360deg);
   }
 }
 
 .animate-spin {
-  animation: bkcSpin 1s linear infinite;
+  animation: spin 1s linear infinite;
 }
 
-/* UPI button hover effects */
+/* Button will-change for performance */
 .upi-app-btn {
-  transform-origin: center;
   will-change: transform;
 }

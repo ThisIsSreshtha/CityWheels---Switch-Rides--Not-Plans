@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { animate, stagger, createTimeline } from 'animejs';
+import { animate } from 'animejs';
 import * as THREE from 'three';
 import { QRCodeSVG } from 'qrcode.react';
 import './BookingConfirmation.css';
@@ -66,10 +66,9 @@ const ThreeConfirmBg = () => {
       m.scale.set(s, s, s);
       m.userData = {
         sx: (Math.random() - 0.5) * 0.002,
-        sy: -(0.003 + Math.random() * 0.004), // falling confetti
+        sy: -(0.003 + Math.random() * 0.004),
         rx: (Math.random() - 0.5) * 0.008,
         ry: (Math.random() - 0.5) * 0.006,
-        origY: m.position.y,
       };
       scene.add(m);
       meshes.push(m);
@@ -92,21 +91,19 @@ const ThreeConfirmBg = () => {
         m.rotation.x += m.userData.rx;
         m.rotation.y += m.userData.ry;
         m.position.x += m.userData.sx;
-        m.position.y += m.userData.sy * 0.15; // slow fall
-        m.position.x += Math.sin(t * 0.3 + m.position.y) * 0.003; // gentle sway
+        m.position.y += m.userData.sy * 0.15;
+        m.position.x += Math.sin(t * 0.3 + m.position.y) * 0.003;
         if (m.position.y < -16) m.position.y = 16;
         if (m.position.x > 24) m.position.x = -24;
         if (m.position.x < -24) m.position.x = 24;
       });
-      pl.position.x = 8 + Math.sin(t * 0.25) * 5;
-      pl2.position.y = -4 + Math.cos(t * 0.3) * 3;
       renderer.render(scene, camera);
     };
     tick();
 
     return () => {
-      cancelAnimationFrame(fid);
       window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(fid);
       renderer.dispose();
       if (el.contains(renderer.domElement)) el.removeChild(renderer.domElement);
       meshes.forEach((m) => { m.geometry.dispose(); m.material.dispose(); });
@@ -123,86 +120,120 @@ const generateUPIString = (booking) => {
   const amount = booking.pricing?.totalAmount || 0;
   const bookingId = booking.bookingId || booking._id;
   const name = 'CityWheels';
-  // UPI deep link format: upi://pay?pa=<VPA>&pn=<Name>&am=<Amount>&cu=INR&tn=<Note>
   return `upi://pay?pa=citywheels@upi&pn=${encodeURIComponent(name)}&am=${amount}&cu=INR&tn=${encodeURIComponent(`Booking ${bookingId}`)}`;
 };
 
 /* ------------------------------------------------------------------ */
-/*  Main BookingConfirmation Component                                 */
+/*  Main Component                                                      */
 /* ------------------------------------------------------------------ */
 const BookingConfirmation = () => {
-  const { bookingId } = useParams();
+  const { id: bookingId } = useParams();
   const location = useLocation();
   const pageRef = useRef(null);
+  const pollIntervalRef = useRef(null);
 
   const [booking, setBooking] = useState(location.state?.booking || null);
   const [vehicle, setVehicle] = useState(location.state?.vehicle || null);
   const [loading, setLoading] = useState(!booking);
   const [paymentStatus, setPaymentStatus] = useState('pending');
   const [showPaymentSuccess, setShowPaymentSuccess] = useState(false);
-  const [countdown, setCountdown] = useState(900); // 15 min QR expiry
+  const [countdown, setCountdown] = useState(900);
+  const [isPolling, setIsPolling] = useState(false);
 
   /* ---- Fetch booking if not passed via state ---- */
   useEffect(() => {
-    if (booking) { setLoading(false); return; }
+    if (booking) {
+      setLoading(false);
+      setPaymentStatus(booking.payment?.status || 'pending');
+      return;
+    }
+
     const fetchBooking = async () => {
       try {
         const res = await axios.get(`/api/bookings/${bookingId}`);
         setBooking(res.data.data);
+        setPaymentStatus(res.data.data.payment?.status || 'pending');
+
         if (res.data.data.vehicle) {
-          if (typeof res.data.data.vehicle === 'object') {
-            setVehicle(res.data.data.vehicle);
-          } else {
-            const vRes = await axios.get(`/api/vehicles/${res.data.data.vehicle}`);
-            setVehicle(vRes.data.data);
-          }
+          const vRes = await axios.get(`/api/vehicles/${res.data.data.vehicle}`);
+          setVehicle(vRes.data.data);
         }
-        if (res.data.data.payment?.status === 'paid') {
-          setPaymentStatus('paid');
-        }
-      } catch (err) {
-        toast.error('Could not load booking details');
-      } finally {
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching booking:', error);
+        toast.error('Failed to load booking details');
         setLoading(false);
       }
     };
+
     fetchBooking();
   }, [bookingId, booking]);
 
-  /* ---- Countdown timer ---- */
+  /* ---- QR countdown timer ---- */
   useEffect(() => {
     if (paymentStatus === 'paid' || countdown <= 0) return;
-    const timer = setInterval(() => setCountdown((c) => c - 1), 1000);
-    return () => clearInterval(timer);
+    const interval = setInterval(() => setCountdown((c) => Math.max(c - 1, 0)), 1000);
+    return () => clearInterval(interval);
   }, [paymentStatus, countdown]);
 
-  const formatTime = (s) => {
-    const m = Math.floor(s / 60);
-    const sec = s % 60;
-    return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
-  };
+  /* ---- Cleanup polling on unmount ---- */
+  useEffect(() => {
+    return () => {
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+      }
+    };
+  }, []);
 
-  /* ---- Anime.js entrance ---- */
+  /* ---- Page load animations ---- */
   useEffect(() => {
     if (loading || !booking || !pageRef.current) return;
-    const tl = createTimeline({ defaults: { ease: 'outQuart' } });
-    tl.add(pageRef.current.querySelector('.bkc-header'), {
-      opacity: [0, 1], translateY: [-30, 0], duration: 700,
-    })
-    .add(pageRef.current.querySelector('.bkc-qr-section'), {
-      opacity: [0, 1], scale: [0.85, 1], duration: 800, ease: 'outBack(1.3)',
-    }, '-=400')
-    .add(pageRef.current.querySelectorAll('.bkc-detail-card'), {
-      opacity: [0, 1], translateY: [25, 0], duration: 550, delay: stagger(100),
-    }, '-=500')
-    .add(pageRef.current.querySelector('.bkc-actions'), {
-      opacity: [0, 1], translateY: [20, 0], duration: 500,
-    }, '-=300');
 
-    // Pulse the QR code continuously
+    // Sequential animations without timeline
+    animate({
+      targets: '.bkc-header',
+      opacity: [0, 1],
+      translateY: [-30, 0],
+      duration: 700,
+      easing: 'easeOutQuart',
+    });
+
+    setTimeout(() => {
+      animate({
+        targets: '.bkc-qr-section',
+        opacity: [0, 1],
+        scale: [0.85, 1],
+        duration: 800,
+        easing: 'easeOutQuart',
+      });
+    }, 300);
+
+    setTimeout(() => {
+      animate({
+        targets: '.bkc-detail-card',
+        opacity: [0, 1],
+        translateY: [25, 0],
+        duration: 600,
+        delay: function (el, i) { return i * 100; },
+        easing: 'easeOutQuart',
+      });
+    }, 500);
+
+    setTimeout(() => {
+      animate({
+        targets: '.bkc-actions',
+        opacity: [0, 1],
+        translateY: [20, 0],
+        duration: 500,
+        easing: 'easeOutQuart',
+      });
+    }, 800);
+
+    // Pulse QR code
     const qrEl = pageRef.current.querySelector('.bkc-qr-glow');
     if (qrEl) {
-      animate(qrEl, {
+      animate({
+        targets: qrEl,
         boxShadow: [
           '0 0 20px rgba(230,126,34,0.15)',
           '0 0 40px rgba(230,126,34,0.30)',
@@ -210,71 +241,162 @@ const BookingConfirmation = () => {
         ],
         duration: 2500,
         loop: true,
-        ease: 'inOutSine',
+        easing: 'easeInOutSine',
       });
     }
   }, [loading, booking]);
 
-  /* ---- Simulate payment (demo) ---- */
+  /* ---- Handle UPI payment deep links ---- */
+  const handleUPIPayment = (app) => {
+    const amount = booking.pricing?.totalAmount || 0;
+    const bid = booking.bookingId || booking._id;
+
+    const deepLinks = {
+      gpay: `tez://upi/pay?pa=citywheels@upi&pn=CityWheels&am=${amount}&cu=INR&tn=Booking%20${bid}`,
+      phonepe: `phonepe://pay?pa=citywheels@upi&pn=CityWheels&am=${amount}&cu=INR&tn=Booking%20${bid}`,
+      paytm: `paytmmp://pay?pa=citywheels@upi&pn=CityWheels&am=${amount}&cu=INR&tn=Booking%20${bid}`,
+      bhim: generateUPIString(booking)
+    };
+
+    // Animate button
+    const buttons = document.querySelectorAll('.upi-app-btn');
+    buttons.forEach(btn => {
+      if (btn.dataset.app === app) {
+        animate({
+          targets: btn,
+          scale: [1, 1.15, 1],
+          duration: 400,
+          easing: 'easeOutQuad'
+        });
+      }
+    });
+
+    // Try to open UPI app
+    window.location.href = deepLinks[app];
+
+    // Start polling after short delay
+    setTimeout(() => {
+      startPaymentPolling();
+    }, 1000);
+
+    toast.success(`Opening ${app.toUpperCase()}...`);
+  };
+
+  /* ---- Payment polling ---- */
+  const startPaymentPolling = useCallback(() => {
+    if (pollIntervalRef.current) return;
+
+    setIsPolling(true);
+    toast.info('🔄 Waiting for payment confirmation...', { autoClose: 3000 });
+
+    pollIntervalRef.current = setInterval(async () => {
+      try {
+        const res = await axios.get(`/api/bookings/${bookingId}`);
+        if (res.data.data.payment?.status === 'paid') {
+          setPaymentStatus('paid');
+          setShowPaymentSuccess(true);
+          setIsPolling(false);
+          clearInterval(pollIntervalRef.current);
+          pollIntervalRef.current = null;
+          toast.success('✅ Payment confirmed!');
+
+          // Success animation
+          setTimeout(() => {
+            const checkEl = document.querySelector('.bkc-check-icon');
+            if (checkEl) {
+              animate({
+                targets: checkEl,
+                rotate: [0, 360],
+                scale: [0, 1],
+                duration: 900,
+                easing: 'easeOutExpo'
+              });
+            }
+            const cards = document.querySelectorAll('.bkc-detail-card');
+            if (cards.length) {
+              animate({
+                targets: cards,
+                scale: [1, 1.02, 1],
+                duration: 500,
+                delay: function (el, i) { return i * 80; },
+                easing: 'easeOutQuad',
+              });
+            }
+          }, 100);
+        }
+      } catch (error) {
+        console.error('Polling error:', error);
+      }
+    }, 3000);
+
+    // Stop polling after 15 minutes
+    setTimeout(() => {
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+        pollIntervalRef.current = null;
+        setIsPolling(false);
+        toast.warning('Payment polling stopped. Please refresh if payment was completed.');
+      }
+    }, 900000);
+  }, [bookingId]);
+
+  /* ---- Simulate payment (for demo/testing) ---- */
   const simulatePayment = useCallback(() => {
     if (paymentStatus === 'paid') return;
     setPaymentStatus('processing');
-
-    // Animate processing state
-    if (pageRef.current) {
-      const btn = pageRef.current.querySelector('.bkc-pay-btn');
-      if (btn) animate(btn, { scale: [1, 0.96, 1], duration: 300, ease: 'outQuad' });
-    }
 
     setTimeout(() => {
       setPaymentStatus('paid');
       setShowPaymentSuccess(true);
 
-      // Success animation
       setTimeout(() => {
-        if (!pageRef.current) return;
-        const successEl = pageRef.current.querySelector('.bkc-payment-success');
-        if (successEl) {
-          animate(successEl, { opacity: [0, 1], scale: [0.8, 1], duration: 700, ease: 'outBack(1.5)' });
-          const checkEl = successEl.querySelector('.bkc-check-icon');
-          if (checkEl) {
-            animate(checkEl, { rotate: [0, 360], scale: [0, 1], duration: 900, ease: 'outExpo' });
-          }
-        }
-        // Animate confetti burst on detail cards
-        const cards = pageRef.current.querySelectorAll('.bkc-detail-card');
-        if (cards.length) {
-          animate(cards, {
-            scale: [1, 1.02, 1],
-            duration: 500,
-            delay: stagger(80),
-            ease: 'outQuad',
+        const checkEl = document.querySelector('.bkc-check-icon');
+        if (checkEl) {
+          animate({
+            targets: checkEl,
+            rotate: [0, 360],
+            scale: [0, 1],
+            duration: 900,
+            easing: 'easeOutExpo'
           });
         }
-      }, 50);
-    }, 2200);
+        const cards = document.querySelectorAll('.bkc-detail-card');
+        if (cards.length) {
+          animate({
+            targets: cards,
+            scale: [1, 1.02, 1],
+            duration: 500,
+            delay: anime.stagger(80),
+            easing: 'easeOutQuad',
+          });
+        }
+      }, 100);
+    }, 2000);
   }, [paymentStatus]);
 
-  /* ---- Render helpers ---- */
+  /* ---- Helpers ---- */
+  const formatTime = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
   const getPeriodLabel = (p) => {
     if (p === 'hourly') return 'Hour(s)';
     if (p === 'daily') return 'Day(s)';
     return 'Week(s)';
   };
 
-  const getVehicleIcon = (type) => {
-    const icons = { car: '🚗', motorcycle: '🏍️', bicycle: '🚲', scooter: '🛵', scooty: '🛵' };
-    return icons[type] || '🚗';
-  };
-
   /* ---- Loading ---- */
   if (loading) {
     return (
-      <div className="bkc-page">
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50 relative overflow-hidden">
         <ThreeConfirmBg />
-        <div className="bkc-loading">
-          <div className="bkc-spinner"></div>
-          <p>Loading booking details...</p>
+        <div className="relative z-10 flex items-center justify-center min-h-screen">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-700 text-lg">Loading booking details...</p>
+          </div>
         </div>
       </div>
     );
@@ -282,13 +404,17 @@ const BookingConfirmation = () => {
 
   if (!booking) {
     return (
-      <div className="bkc-page">
+      <div className="min-h-screen bg-gradient-to-br from-orange-50 to-amber-50 relative overflow-hidden">
         <ThreeConfirmBg />
-        <div className="bkc-not-found">
-          <span className="bkc-nf-icon">🔍</span>
-          <h2>Booking Not Found</h2>
-          <p>We couldn't find this booking. It may have been cancelled.</p>
-          <Link to="/user/bookings" className="bkc-back-btn">← My Bookings</Link>
+        <div className="relative z-10 flex items-center justify-center min-h-screen">
+          <div className="text-center bg-white rounded-2xl shadow-2xl p-8 max-w-md">
+            <span className="text-6xl block mb-4">🔍</span>
+            <h2 className="text-2xl font-bold text-gray-800 mb-2">Booking Not Found</h2>
+            <p className="text-gray-600 mb-6">We couldn't find this booking. It may have been cancelled.</p>
+            <Link to="/user/bookings" className="inline-block bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold transition-all">
+              ← My Bookings
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -300,256 +426,282 @@ const BookingConfirmation = () => {
   const isExpired = countdown <= 0 && paymentStatus !== 'paid';
 
   return (
-    <div className="bkc-page" ref={pageRef}>
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 relative overflow-hidden" ref={pageRef}>
       <ThreeConfirmBg />
 
-      <div className="bkc-container">
-        {/* Breadcrumb */}
-        <nav className="bkc-breadcrumb">
-          <Link to="/">Home</Link>
-          <span>/</span>
-          <Link to="/user/bookings">My Bookings</Link>
-          <span>/</span>
-          <span className="bkc-bc-current">Payment</span>
-        </nav>
-
+      <div className="relative z-10 max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-6 lg:py-8">
         {/* Header */}
-        <div className="bkc-header" style={{ opacity: 0 }}>
-          <div className="bkc-header-icon">🎉</div>
-          <h1>Booking Confirmed!</h1>
-          <p className="bkc-header-sub">
-            Complete your payment to secure your ride.
-            Booking ID: <strong>{booking.bookingId || booking._id?.slice(-8)}</strong>
-          </p>
+        <div className="bkc-header mb-6" style={{ opacity: 0 }}>
+          <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 mb-4">
+            <Link to="/" className="hover:text-orange-600 transition-colors">Home</Link>
+            <span>/</span>
+            <Link to="/user/bookings" className="hover:text-orange-600 transition-colors">My Bookings</Link>
+            <span>/</span>
+            <span className="text-orange-600 font-semibold">Payment</span>
+          </div>
+
+          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-2">🎉 Booking Confirmed!</h1>
+            <p className="text-xs sm:text-sm lg:text-base text-gray-600">
+              Complete your payment to secure your ride. Booking ID: <span className="font-mono font-bold text-orange-600">{booking.bookingId || booking._id}</span>
+            </p>
+          </div>
         </div>
 
-        {/* Main Layout */}
-        <div className="bkc-main-grid">
-          {/* Left Column: QR Payment */}
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          {/* Left: Payment Section */}
           <div className="bkc-qr-section" style={{ opacity: 0 }}>
-            {!showPaymentSuccess ? (
-              <div className="bkc-qr-card">
-                <h3 className="bkc-qr-title">
-                  <span className="bkc-qr-title-icon">📱</span>
-                  Scan & Pay
+            {paymentStatus !== 'paid' ? (
+              <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8">
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                  <span>📱</span> Scan & Pay
                 </h3>
-                <p className="bkc-qr-subtitle">Scan the QR code with any UPI app to complete payment</p>
 
-                <div className={`bkc-qr-wrapper ${isExpired ? 'expired' : ''}`}>
-                  <div className="bkc-qr-glow">
-                    <div className="bkc-qr-inner">
-                      <QRCodeSVG
-                        value={upiString}
-                        size={200}
-                        level="H"
-                        includeMargin={true}
-                        bgColor="#ffffff"
-                        fgColor="#2c1f0e"
-                        imageSettings={{
-                          src: '',
-                          height: 0,
-                          width: 0,
-                        }}
-                      />
+                {/* QR Code */}
+                <div className="relative mb-6">
+                  <div className="bkc-qr-glow bg-gradient-to-br from-orange-100 to-amber-100 p-6 rounded-2xl flex justify-center items-center mx-auto" style={{ maxWidth: '240px' }}>
+                    <div className="bg-white p-4 rounded-xl shadow-lg">
+                      <QRCodeSVG value={upiString} size={180} level="H" />
                     </div>
                   </div>
                   {isExpired && (
-                    <div className="bkc-qr-expired-overlay">
-                      <span>⏰</span>
-                      <p>QR Code Expired</p>
-                      <button
-                        onClick={() => setCountdown(900)}
-                        className="bkc-refresh-btn"
-                      >
+                    <div className="absolute inset-0 bg-gray-900/80 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center">
+                      <span className="text-5xl mb-2">⏰</span>
+                      <p className="text-white font-semibold mb-3">QR Code Expired</p>
+                      <button onClick={() => setCountdown(900)} className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-semibold transition-all">
                         Refresh QR
                       </button>
                     </div>
                   )}
                 </div>
 
-                <div className="bkc-qr-amount">
-                  <span className="bkc-qr-amount-label">Amount to Pay</span>
-                  <span className="bkc-qr-amount-value">₹{booking.pricing?.totalAmount?.toLocaleString()}</span>
+                {/* Amount & Timer */}
+                <div className="text-center mb-6">
+                  <p className="text-xs sm:text-sm text-gray-600 mb-1">Amount to Pay</p>
+                  <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-orange-600">₹{booking.pricing?.totalAmount?.toLocaleString()}</p>
+                  {!isExpired && (
+                    <p className="text-xs sm:text-sm text-gray-500 mt-2">
+                      ⏱️ Expires in <strong>{formatTime(countdown)}</strong>
+                    </p>
+                  )}
                 </div>
 
-                {!isExpired && (
-                  <div className="bkc-qr-timer">
-                    <span className="bkc-timer-icon">⏱️</span>
-                    <span>Expires in <strong>{formatTime(countdown)}</strong></span>
+                {/* Polling Indicator */}
+                {isPolling && (
+                  <div className="mb-6 p-3 bg-blue-50 border border-blue-200 rounded-lg flex items-center gap-3">
+                    <div className="w-5 h-5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-xs sm:text-sm text-blue-700 font-medium">Waiting for payment confirmation...</span>
                   </div>
                 )}
 
-                <div className="bkc-upi-apps">
-                  <span className="bkc-upi-label">Pay with</span>
-                  <div className="bkc-upi-icons">
-                    <span className="bkc-upi-app" title="Google Pay">G Pay</span>
-                    <span className="bkc-upi-app" title="PhonePe">PhonePe</span>
-                    <span className="bkc-upi-app" title="Paytm">Paytm</span>
-                    <span className="bkc-upi-app" title="BHIM">BHIM</span>
+                {/* UPI Apps */}
+                <div className="mb-6">
+                  <p className="text-xs sm:text-sm text-gray-600 text-center mb-3">Pay with your favorite UPI app</p>
+                  <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                    <button
+                      onClick={() => handleUPIPayment('gpay')}
+                      data-app="gpay"
+                      className="upi-app-btn flex flex-col items-center justify-center p-3 sm:p-4 bg-white border-2 border-gray-200 hover:border-blue-500 hover:shadow-lg rounded-xl transition-all duration-200 transform hover:scale-105 active:scale-95"
+                    >
+                      <div className="text-3xl sm:text-4xl mb-2">💳</div>
+                      <span className="text-xs sm:text-sm font-semibold text-gray-700">Google Pay</span>
+                    </button>
+                    <button
+                      onClick={() => handleUPIPayment('phonepe')}
+                      data-app="phonepe"
+                      className="upi-app-btn flex flex-col items-center justify-center p-3 sm:p-4 bg-white border-2 border-gray-200 hover:border-purple-500 hover:shadow-lg rounded-xl transition-all duration-200 transform hover:scale-105 active:scale-95"
+                    >
+                      <div className="text-3xl sm:text-4xl mb-2">📱</div>
+                      <span className="text-xs sm:text-sm font-semibold text-gray-700">PhonePe</span>
+                    </button>
+                    <button
+                      onClick={() => handleUPIPayment('paytm')}
+                      data-app="paytm"
+                      className="upi-app-btn flex flex-col items-center justify-center p-3 sm:p-4 bg-white border-2 border-gray-200 hover:border-blue-600 hover:shadow-lg rounded-xl transition-all duration-200 transform hover:scale-105 active:scale-95"
+                    >
+                      <div className="text-3xl sm:text-4xl mb-2">💰</div>
+                      <span className="text-xs sm:text-sm font-semibold text-gray-700">Paytm</span>
+                    </button>
+                    <button
+                      onClick={() => handleUPIPayment('bhim')}
+                      data-app="bhim"
+                      className="upi-app-btn flex flex-col items-center justify-center p-3 sm:p-4 bg-white border-2 border-gray-200 hover:border-orange-500 hover:shadow-lg rounded-xl transition-all duration-200 transform hover:scale-105 active:scale-95"
+                    >
+                      <div className="text-3xl sm:text-4xl mb-2">🏦</div>
+                      <span className="text-xs sm:text-sm font-semibold text-gray-700">BHIM UPI</span>
+                    </button>
                   </div>
                 </div>
 
-                <div className="bkc-divider">
-                  <span>or</span>
+                {/* Divider */}
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="flex-1 h-px bg-gray-300"></div>
+                  <span className="text-xs text-gray-500">or</span>
+                  <div className="flex-1 h-px bg-gray-300"></div>
                 </div>
 
+                {/* Demo Button */}
                 <button
-                  className="bkc-pay-btn"
                   onClick={simulatePayment}
                   disabled={paymentStatus === 'processing'}
+                  className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold py-3 sm:py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
                 >
                   {paymentStatus === 'processing' ? (
-                    <><span className="bkc-btn-spinner"></span> Processing...</>
+                    <span className="flex items-center justify-center gap-2">
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                      Processing...
+                    </span>
                   ) : (
-                    <>💳 Simulate Payment</>
+                    <span>💳 Simulate Payment</span>
                   )}
                 </button>
-                <p className="bkc-demo-note">* Demo mode — click to simulate successful payment</p>
+                <p className="text-xs text-gray-500 text-center mt-2">* Demo mode — click to simulate successful payment</p>
               </div>
             ) : (
-              <div className="bkc-payment-success">
-                <div className="bkc-check-icon">✅</div>
-                <h2>Payment Successful!</h2>
-                <p className="bkc-ps-amount">₹{booking.pricing?.totalAmount?.toLocaleString()} paid</p>
-                <div className="bkc-ps-details">
-                  <div className="bkc-ps-row">
-                    <span>Transaction ID</span>
-                    <span>TXN{Date.now().toString().slice(-10)}</span>
+              <div className="bg-gradient-to-br from-green-50 to-emerald-100 rounded-2xl shadow-2xl p-6 sm:p-8 text-center">
+                <div className="bkc-check-icon text-6xl sm:text-7xl mb-4">✅</div>
+                <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">Payment Successful!</h2>
+                <p className="text-xl sm:text-2xl font-bold text-green-600 mb-6">₹{booking.pricing?.totalAmount?.toLocaleString()} paid</p>
+                <div className="bg-white rounded-xl p-4 space-y-3 mb-6">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Transaction ID</span>
+                    <span className="font-mono font-semibold">TXN{Date.now().toString().slice(-10)}</span>
                   </div>
-                  <div className="bkc-ps-row">
-                    <span>Payment Method</span>
-                    <span>UPI</span>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Payment Method</span>
+                    <span className="font-semibold">UPI</span>
                   </div>
-                  <div className="bkc-ps-row">
-                    <span>Status</span>
-                    <span className="bkc-ps-status-paid">Paid ✓</span>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Status</span>
+                    <span className="font-semibold text-green-600">Paid ✓</span>
                   </div>
                 </div>
-                <div className="bkc-ps-receipt">
+                <div className="bg-green-100 border-2 border-green-300 rounded-lg p-3 flex items-center justify-center gap-2">
                   <span>🧾</span>
-                  <span>Receipt has been sent to your email</span>
+                  <span className="text-sm text-green-800">Receipt has been sent to your email</span>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Right Column: Booking Details */}
-          <div className="bkc-details-col">
+          {/* Right: Booking Details */}
+          <div className="space-y-4 sm:space-y-6">
             {/* Vehicle Card */}
-            <div className="bkc-detail-card bkc-vehicle-card" style={{ opacity: 0 }}>
-              <h4 className="bkc-card-title">🚗 Vehicle</h4>
-              <div className="bkc-vehicle-row">
-                <div className="bkc-v-image">
+            <div className="bkc-detail-card bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6" style={{ opacity: 0 }}>
+              <h4 className="text-base sm:text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+                <span>🚗</span> Vehicle
+              </h4>
+              <div className="flex gap-4">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
                   {hasImage ? (
                     <img
                       src={`${baseUrl}${vehicle.images[0]}`}
                       alt={vehicle.name}
+                      className="w-full h-full object-cover"
                       onError={(e) => { e.target.style.display = 'none'; e.target.nextElementSibling.style.display = 'flex'; }}
                     />
                   ) : null}
-                  <div className="bkc-v-placeholder" style={hasImage ? { display: 'none' } : {}}>
-                    <span>{getVehicleIcon(vehicle?.type)}</span>
+                  <div className={`w-full h-full items-center justify-center text-4xl ${hasImage ? 'hidden' : 'flex'}`}>
+                    🚗
                   </div>
                 </div>
-                <div className="bkc-v-info">
-                  <h5>{vehicle?.name || 'Vehicle'}</h5>
-                  <p>{vehicle?.brand} {vehicle?.model}</p>
-                  <p className="bkc-v-type">{vehicle?.type} • {vehicle?.category}</p>
+                <div className="flex-1">
+                  <h5 className="text-sm sm:text-base font-bold text-gray-800">{vehicle?.name || 'Vehicle'} ({vehicle?.location || 'N/A'})</h5>
+                  <p className="text-xs sm:text-sm text-gray-600">{vehicle?.model || 'Model not specified'}</p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    {vehicle?.type || 'car'} • {vehicle?.isElectric ? 'Electric' : 'Non-Electric'}
+                  </p>
                 </div>
               </div>
             </div>
 
-            {/* Rental Details Card */}
-            <div className="bkc-detail-card" style={{ opacity: 0 }}>
-              <h4 className="bkc-card-title">📅 Rental Details</h4>
-              <div className="bkc-info-grid">
-                <div className="bkc-info-item">
-                  <span className="bkc-info-label">Duration</span>
-                  <span className="bkc-info-value">
-                    {booking.duration} {getPeriodLabel(booking.rentalPeriod)}
-                  </span>
+            {/* Rental Details */}
+            <div className="bkc-detail-card bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6" style={{ opacity: 0 }}>
+              <h4 className="text-base sm:text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+                <span>📅</span> Rental Period
+              </h4>
+              <div className="space-y-2 text-xs sm:text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Duration</span>
+                  <span className="font-semibold">{booking.duration} {getPeriodLabel(booking.rentalPeriod)}</span>
                 </div>
-                <div className="bkc-info-item">
-                  <span className="bkc-info-label">Start</span>
-                  <span className="bkc-info-value">
-                    {new Date(booking.startDate).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
-                  </span>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Start Date</span>
+                  <span className="font-semibold">{new Date(booking.startDate).toLocaleString()}</span>
                 </div>
-                <div className="bkc-info-item">
-                  <span className="bkc-info-label">Return By</span>
-                  <span className="bkc-info-value">
-                    {new Date(booking.endDate).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
-                  </span>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Return Date</span>
+                  <span className="font-semibold">{new Date(booking.returnDate).toLocaleString()}</span>
                 </div>
-                <div className="bkc-info-item">
-                  <span className="bkc-info-label">Purpose</span>
-                  <span className="bkc-info-value" style={{ textTransform: 'capitalize' }}>
-                    {booking.travelPurpose}
-                  </span>
-                </div>
-                {booking.pickupLocation?.address && (
-                  <div className="bkc-info-item bkc-full-width">
-                    <span className="bkc-info-label">Pickup</span>
-                    <span className="bkc-info-value">{booking.pickupLocation.address}</span>
-                  </div>
-                )}
               </div>
             </div>
 
-            {/* Price Breakdown Card */}
-            <div className="bkc-detail-card bkc-price-card" style={{ opacity: 0 }}>
-              <h4 className="bkc-card-title">💰 Price Breakdown</h4>
-              <div className="bkc-price-rows">
-                <div className="bkc-price-row">
-                  <span>Base Price ({booking.duration} {getPeriodLabel(booking.rentalPeriod).toLowerCase()})</span>
-                  <span>₹{booking.pricing?.basePrice?.toLocaleString()}</span>
+            {/* Price Breakdown  */}
+            <div className="bkc-detail-card bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6" style={{ opacity: 0 }}>
+              <h4 className="text-base sm:text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
+                <span>💰</span> Price Breakdown
+              </h4>
+              <div className="space-y-2 text-xs sm:text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Base Price ({booking.duration} {getPeriodLabel(booking.rentalPeriod).toLowerCase()})</span>
+                  <span className="font-semibold">₹{booking.pricing?.basePrice?.toLocaleString()}</span>
                 </div>
-                <div className="bkc-price-row">
-                  <span>GST (18%)</span>
-                  <span>₹{booking.pricing?.taxes?.toLocaleString()}</span>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">GST (18%)</span>
+                  <span className="font-semibold">₹{booking.pricing?.taxes?.toLocaleString()}</span>
                 </div>
-                <div className="bkc-price-row">
-                  <span>Security Deposit</span>
-                  <span>₹{booking.pricing?.securityDeposit?.toLocaleString()}</span>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Security Deposit</span>
+                  <span className="font-semibold">₹{booking.pricing?.securityDeposit?.toLocaleString()}</span>
                 </div>
-                <div className="bkc-price-row bkc-price-total">
-                  <span>Total Amount</span>
-                  <span>₹{booking.pricing?.totalAmount?.toLocaleString()}</span>
+                <div className="border-t-2 border-gray-200 pt-2 mt-2"></div>
+                <div className="flex justify-between text-base sm:text-lg font-bold">
+                  <span className="text-gray-800">Total Amount</span>
+                  <span className="text-orange-600">₹{booking.pricing?.totalAmount?.toLocaleString()}</span>
                 </div>
               </div>
-              <p className="bkc-deposit-note">🔒 Security deposit is refundable upon safe return</p>
+              <p className="text-xs text-gray-500 mt-3 flex items-center gap-1">
+                <span>🔒</span> Security deposit is refundable upon safe return
+              </p>
             </div>
 
             {/* Status Card */}
-            <div className="bkc-detail-card bkc-status-card" style={{ opacity: 0 }}>
-              <div className="bkc-status-row">
-                <span className="bkc-status-label">Booking Status</span>
-                <span className={`bkc-status-badge ${booking.status}`}>
-                  {booking.status === 'pending' ? '⏳ Pending' : booking.status === 'confirmed' ? '✅ Confirmed' : booking.status}
-                </span>
-              </div>
-              <div className="bkc-status-row">
-                <span className="bkc-status-label">Payment</span>
-                <span className={`bkc-status-badge ${paymentStatus}`}>
-                  {paymentStatus === 'paid' ? '✅ Paid' : paymentStatus === 'processing' ? '⏳ Processing' : '🔴 Pending'}
-                </span>
+            <div className="bkc-detail-card bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6" style={{ opacity: 0 }}>
+              <div className="space-y-2 text-xs sm:text-sm">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Booking Status</span>
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${booking.status === 'confirmed' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                    }`}>
+                    {booking.status === 'pending' ? '⏳ Pending' : booking.status === 'confirmed' ? '✅ Confirmed' : booking.status}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Payment</span>
+                  <span className={`px-3 py-1 rounded-full text-xs font-semibold ${paymentStatus === 'paid' ? 'bg-green-100 text-green-700' :
+                    paymentStatus === 'processing' ? 'bg-blue-100 text-blue-700' :
+                      'bg-red-100 text-red-700'
+                    }`}>
+                    {paymentStatus === 'paid' ? '✅ Paid' : paymentStatus === 'processing' ? '⏳ Processing' : '🔴 Pending'}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Bottom Actions */}
-        <div className="bkc-actions" style={{ opacity: 0 }}>
-          <Link to="/user/bookings" className="bkc-action-btn secondary">
+        <div className="bkc-actions mt-6 flex flex-wrap gap-3 justify-center" style={{ opacity: 0 }}>
+          <Link to="/user/bookings" className="bg-white hover:bg-gray-50 text-gray-700 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all text-xs sm:text-sm">
             📋 My Bookings
           </Link>
-          <Link to="/vehicles" className="bkc-action-btn tertiary">
+          <Link to="/vehicles" className="bg-white hover:bg-gray-50 text-gray-700 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all text-xs sm:text-sm">
             🔍 Browse More Vehicles
           </Link>
           {paymentStatus === 'paid' && (
             <button
-              className="bkc-action-btn primary"
               onClick={() => window.print()}
+              className="bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold shadow-lg hover:shadow-xl transition-all text-xs sm:text-sm no-print"
             >
               🖨️ Print Receipt
             </button>
