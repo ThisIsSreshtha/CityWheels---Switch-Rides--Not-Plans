@@ -102,11 +102,21 @@
 }
 
 /* ===== Responsive ===== */
+@media (max-width: 1024px) {
+  .stat-card {
+    padding: clamp(14px, 2.5vw, 20px);
+  }
+  .stat-number {
+    font-size: clamp(24px, 4vw, 36px);
+  }
+}
+
 @media (max-width: 768px) {
   .bookings-table {
     display: block;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    min-width: 500px;
   }
 }
 

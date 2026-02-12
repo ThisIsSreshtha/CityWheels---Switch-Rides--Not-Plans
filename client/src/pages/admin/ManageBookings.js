@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { AdminSidebar } from './Home';
 import './AdminPanel.css';
@@ -7,7 +7,6 @@ import './AdminPanel.css';
 const ManageBookings = () => {
   const { user, logout } = useContext(AuthContext);
   const location = useLocation();
-  const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem('adminSidebarCollapsed') === 'true');
   const toggleSidebar = () => setSidebarCollapsed(prev => { const next = !prev; localStorage.setItem('adminSidebarCollapsed', next); return next; });
   const handleLogout = () => { logout(); /* Navigation handled by AuthContext.logout */ };

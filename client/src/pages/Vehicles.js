@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { animate, stagger } from 'animejs';
 import './Vehicles.css';
 
 const Vehicles = () => {
@@ -51,6 +52,26 @@ const Vehicles = () => {
     };
     return icons[type] || '🚗';
   };
+
+  /* ---- anime.js staggered card entry ---- */
+  const animateCards = useCallback(() => {
+    requestAnimationFrame(() => {
+      const cards = document.querySelectorAll('.vehicle-card');
+      if (!cards.length) return;
+      animate(cards, {
+        opacity: [0, 1],
+        translateY: [40, 0],
+        scale: [0.95, 1],
+        duration: 550,
+        ease: 'outQuart',
+        delay: stagger(60, { start: 100 }),
+      });
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!loading && vehicles.length > 0) animateCards();
+  }, [loading, vehicles, animateCards]);
 
   return (
     <div className="vehicles-page">

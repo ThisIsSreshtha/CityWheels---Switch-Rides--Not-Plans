@@ -568,6 +568,29 @@
   border-left: 3px solid #e2e8f0;
 }
 
+@media (max-width: 1024px) {
+  .profile-container {
+    max-width: 900px;
+  }
+
+  .form-row {
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+  }
+
+  .documents-grid {
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  }
+
+  .profile-card {
+    padding: clamp(20px, 3vw, 32px);
+  }
+
+  .motorcycle-container,
+  .dust-trail {
+    opacity: 0.5;
+  }
+}
+
 @media (max-width: 768px) {
   .profile-card {
     padding: 20px;

@@ -18,6 +18,8 @@ import UserDashboard from './pages/user/Dashboard';
 import UserProfile from './pages/user/Profile';
 import MyBookings from './pages/user/MyBookings';
 import CreateBooking from './pages/user/CreateBooking';
+import BookingConfirmation from './pages/user/BookingConfirmation';
+import UserDocVerification from './pages/user/DocumentVerification';
 
 // Admin Pages
 import AdminHome from './pages/admin/Home';
@@ -64,6 +66,8 @@ function App() {
             <Route path="/user/profile" element={<PrivateRoute><UserProfile /></PrivateRoute>} />
             <Route path="/user/bookings" element={<PrivateRoute><MyBookings /></PrivateRoute>} />
             <Route path="/user/book/:vehicleId" element={<PrivateRoute><CreateBooking /></PrivateRoute>} />
+            <Route path="/user/booking-confirmation/:bookingId" element={<PrivateRoute><BookingConfirmation /></PrivateRoute>} />
+            <Route path="/user/verify-documents" element={<PrivateRoute><UserDocVerification /></PrivateRoute>} />
 
             {/* Admin Routes */}
             <Route path="/admin/home" element={<AdminRoute><AdminHome /></AdminRoute>} />

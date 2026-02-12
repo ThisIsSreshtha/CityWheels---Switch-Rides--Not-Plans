@@ -561,7 +561,7 @@
 /* ===== Forms ===== */
 .owner-form .form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
   gap: 16px;
   margin-bottom: 16px;
 }
@@ -766,7 +766,7 @@
 /* ===== Profile Page ===== */
 .profile-info-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
   gap: 16px;
 }
 

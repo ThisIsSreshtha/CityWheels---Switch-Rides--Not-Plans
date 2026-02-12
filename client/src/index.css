@@ -18,6 +18,13 @@ body {
   padding-top: 70px;
 }
 
+@media (max-width: 768px) {
+  body { padding-top: 60px; }
+}
+@media (max-width: 480px) {
+  body { padding-top: 56px; }
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
@@ -141,15 +148,15 @@ code {
 }
 
 .grid-2 {
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
 }
 
 .grid-3 {
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
 }
 
 .grid-4 {
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
 }
 
 @media (max-width: 768px) {

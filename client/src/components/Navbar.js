@@ -1,19 +1,34 @@
-import React, { useContext, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useContext, useState, useEffect, useRef, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { animate } from 'animejs';
 import { AuthContext } from '../context/AuthContext';
 import './Navbar.css';
 
 const Navbar = () => {
-  const { isAuthenticated, isAdmin, isOwner, user, logout } = useContext(AuthContext);
-  const navigate = useNavigate();
+  const { isAuthenticated, isAdmin, isOwner } = useContext(AuthContext);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const handleLogout = () => {
-    logout();
-    navigate('/');
-  };
+  const navLinksRef = useRef(null);
 
   const closeMobileMenu = () => setMobileMenuOpen(false);
+
+  /* ---- anime.js mobile menu animation ---- */
+  const animateMenu = useCallback((open) => {
+    if (!navLinksRef.current) return;
+    const items = navLinksRef.current.querySelectorAll('li');
+    if (open && items.length) {
+      animate(items, {
+        opacity: [0, 1],
+        translateX: [30, 0],
+        duration: 400,
+        ease: 'outQuart',
+        delay: (_, i) => i * 50 + 100,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    animateMenu(mobileMenuOpen);
+  }, [mobileMenuOpen, animateMenu]);
 
   return (
     <nav className="navbar">
@@ -95,7 +110,7 @@ const Navbar = () => {
           {/* Mobile overlay */}
           {mobileMenuOpen && <div className="nav-overlay" onClick={closeMobileMenu}></div>}
 
-          <ul className={`nav-links ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+          <ul ref={navLinksRef} className={`nav-links ${mobileMenuOpen ? 'mobile-open' : ''}`}>
             <li><Link to="/" onClick={closeMobileMenu}>Home</Link></li>
             <li><Link to="/vehicles" onClick={closeMobileMenu}>Vehicles</Link></li>
 

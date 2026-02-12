@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
@@ -9,7 +9,6 @@ import './AdminPanel.css';
 const AdminDashboard = () => {
   const { user, logout } = useContext(AuthContext);
   const location = useLocation();
-  const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => localStorage.getItem('adminSidebarCollapsed') === 'true');
   const toggleSidebar = () => setSidebarCollapsed(prev => { const next = !prev; localStorage.setItem('adminSidebarCollapsed', next); return next; });
   const [stats, setStats] = useState({

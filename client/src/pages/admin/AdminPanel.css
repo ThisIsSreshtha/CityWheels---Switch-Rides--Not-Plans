@@ -621,6 +621,7 @@
 /* ===== Filter Tabs ===== */
 .admin-filter-tabs {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
   margin-bottom: 20px;
 }
@@ -655,7 +656,7 @@
 
 .admin-doc-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
   gap: 20px;
   margin-bottom: 20px;
 }
@@ -730,7 +731,7 @@
 /* ===== Profile Info Grid ===== */
 .admin-profile-info-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
   gap: 16px;
 }
 
@@ -760,7 +761,7 @@
 /* ===== Forms ===== */
 .admin-form .admin-form-row {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
   gap: 16px;
   margin-bottom: 16px;
 }

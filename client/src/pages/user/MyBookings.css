@@ -285,6 +285,22 @@
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  .bookings-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+  }
+
+  .filter-section {
+    gap: 10px;
+    padding: 16px;
+  }
+
+  .filter-btn {
+    padding: 9px 18px;
+    font-size: 13px;
+  }
+}
+
 @media (max-width: 768px) {
   .bookings-grid {
     grid-template-columns: 1fr;

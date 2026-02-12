@@ -113,6 +113,29 @@
 }
 
 /* ========== Responsive ========== */
+@media (max-width: 1024px) {
+  .auth-card {
+    max-width: 420px;
+    padding: clamp(20px, 3.5vw, 36px);
+  }
+}
+
+@media (max-width: 768px) {
+  .auth-container {
+    padding: 20px 16px;
+    min-height: calc(100vh - 60px);
+  }
+
+  .auth-card {
+    max-width: 100%;
+    padding: 24px 20px;
+  }
+
+  .auth-card h2 {
+    font-size: 20px;
+  }
+}
+
 @media (max-width: 480px) {
   .auth-container {
     padding: 16px 12px;
@@ -123,6 +146,17 @@
   .auth-card {
     padding: 20px 16px;
     border-radius: 12px;
+  }
+
+  .auth-card .form-group input,
+  .auth-card .form-group select {
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .btn-block {
+    padding: 12px;
+    font-size: 15px;
   }
 }
 

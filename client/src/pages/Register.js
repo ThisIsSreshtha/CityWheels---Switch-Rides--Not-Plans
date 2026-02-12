@@ -1,7 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
+import { createTimeline, stagger } from 'animejs';
 import './Auth.css';
 
 const Register = () => {
@@ -49,9 +50,28 @@ const Register = () => {
     }
   };
 
+  const cardRef = useRef(null);
+
+  useEffect(() => {
+    if (!cardRef.current) return;
+    const tl = createTimeline({ defaults: { ease: 'outExpo' } });
+    tl.add(cardRef.current, {
+      opacity: [0, 1],
+      translateY: [40, 0],
+      scale: [0.95, 1],
+      duration: 800,
+    })
+    .add(cardRef.current.querySelectorAll('.form-group'), {
+      opacity: [0, 1],
+      translateY: [15, 0],
+      duration: 500,
+      delay: stagger(50),
+    }, '-=400');
+  }, []);
+
   return (
     <div className="auth-container">
-      <div className="auth-card">
+      <div className="auth-card" ref={cardRef} style={{ opacity: 0 }}>
         <h2>Register for CityWheels</h2>
         <p className="auth-subtitle">Start your journey with us</p>
 
