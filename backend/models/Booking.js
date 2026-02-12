@@ -3,8 +3,7 @@ const mongoose = require('mongoose');
 const bookingSchema = new mongoose.Schema({
   bookingId: {
     type: String,
-    unique: true,
-    required: true
+    unique: true
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -150,7 +149,7 @@ const bookingSchema = new mongoose.Schema({
 });
 
 // Generate booking ID
-bookingSchema.pre('save', async function(next) {
+bookingSchema.pre('save', async function (next) {
   if (!this.bookingId) {
     const timestamp = Date.now().toString().slice(-8);
     const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');

@@ -4,11 +4,14 @@
   min-height: 100vh;
   padding: clamp(70px, 10vw, 80px) clamp(12px, 3vw, 20px) clamp(24px, 4vw, 40px);
   background: #f0f2f5;
+  position: relative;
 }
 
 .vehicles-container {
   max-width: 1280px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 /* Page Header */
@@ -98,8 +101,13 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .loading-state p {
@@ -147,8 +155,15 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* ===== Vehicle Card ===== */
@@ -236,8 +251,15 @@
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
 }
 
 /* ===== Vehicle Content ===== */
@@ -331,7 +353,39 @@
   text-align: center;
   padding: 6px 4px;
   border-radius: 6px;
-  transition: all 0.2s ease;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.price-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.price-item:hover::before {
+  left: 100%;
+}
+
+.price-item:hover {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+}
+
+.price-item.selected {
+  background: #ffffff;
+  border-color: #3b82f6;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15), 0 0 0 3px rgba(59, 130, 246, 0.05);
+  transform: scale(1.02);
 }
 
 .price-item.featured {
@@ -355,9 +409,14 @@
   font-size: 15px;
   font-weight: 700;
   color: #1e293b;
+  transition: all 0.25s ease;
 }
 
-.price-item.featured .price-value {
+.price-item.selected .price-label {
+  color: #2563eb;
+}
+
+.price-item.selected .price-value {
   font-size: 16px;
   color: #2563eb;
 }
@@ -373,19 +432,38 @@
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-decoration: none;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
   margin-top: auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.view-details-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s ease, height 0.6s ease;
+}
+
+.view-details-btn:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
 .view-details-btn:hover {
   background: #334155;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(30, 41, 59, 0.2);
+  box-shadow: 0 8px 20px rgba(30, 41, 59, 0.25), 0 0 0 4px rgba(59, 130, 246, 0.1);
 }
 
 .view-details-btn:active {
@@ -394,7 +472,8 @@
 
 .btn-arrow {
   font-size: 15px;
-  transition: transform 0.2s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-block;
 }
 
 .view-details-btn:hover .btn-arrow {

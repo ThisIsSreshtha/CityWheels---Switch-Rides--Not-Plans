@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { animate, stagger } from 'animejs';
+import ThreeBackground from '../components/ThreeBackground';
 import './Vehicles.css';
 
 const Vehicles = () => {
@@ -16,6 +17,8 @@ const Vehicles = () => {
     minPrice: '',
     maxPrice: ''
   });
+  const [selectedPricing, setSelectedPricing] = useState({}); // Track selected pricing per vehicle
+  const buttonRefs = useRef({}); // Refs for button animations
 
   useEffect(() => {
     fetchVehicles();
@@ -40,6 +43,36 @@ const Vehicles = () => {
       ...filters,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handlePricingSelect = (vehicleId, pricingType) => {
+    setSelectedPricing(prev => ({
+      ...prev,
+      [vehicleId]: pricingType
+    }));
+  };
+
+  const getSelectedPricing = (vehicleId) => {
+    return selectedPricing[vehicleId] || 'daily';
+  };
+
+  const handleButtonHover = (vehicleId, isHovering) => {
+    const btn = buttonRefs.current[vehicleId];
+    if (!btn) return;
+
+    if (isHovering) {
+      animate(btn, {
+        scale: [1, 1.03],
+        duration: 300,
+        ease: 'outQuad',
+      });
+    } else {
+      animate(btn, {
+        scale: [1.03, 1],
+        duration: 250,
+        ease: 'outQuad',
+      });
+    }
   };
 
   const getVehicleIcon = (type) => {
@@ -75,6 +108,7 @@ const Vehicles = () => {
 
   return (
     <div className="vehicles-page">
+      <ThreeBackground />
       <div className="vehicles-container">
         <div className="page-header">
           <h1>Available Vehicles</h1>
@@ -206,21 +240,36 @@ const Vehicles = () => {
                     </div>
 
                     <div className="pricing-section">
-                      <div className="price-item">
+                      <div
+                        className={`price-item ${getSelectedPricing(vehicle._id) === 'hourly' ? 'selected' : ''}`}
+                        onClick={() => handlePricingSelect(vehicle._id, 'hourly')}
+                      >
                         <span className="price-label">Hourly</span>
                         <span className="price-value">₹{vehicle.pricing?.hourly || 0}</span>
                       </div>
-                      <div className="price-item featured">
+                      <div
+                        className={`price-item ${getSelectedPricing(vehicle._id) === 'daily' ? 'selected' : ''}`}
+                        onClick={() => handlePricingSelect(vehicle._id, 'daily')}
+                      >
                         <span className="price-label">Daily</span>
                         <span className="price-value">₹{vehicle.pricing?.daily || 0}</span>
                       </div>
-                      <div className="price-item">
+                      <div
+                        className={`price-item ${getSelectedPricing(vehicle._id) === 'weekly' ? 'selected' : ''}`}
+                        onClick={() => handlePricingSelect(vehicle._id, 'weekly')}
+                      >
                         <span className="price-label">Weekly</span>
                         <span className="price-value">₹{vehicle.pricing?.weekly || 0}</span>
                       </div>
                     </div>
 
-                    <Link to={`/vehicles/${vehicle._id}`} className="view-details-btn">
+                    <Link
+                      to={`/vehicles/${vehicle._id}`}
+                      className="view-details-btn"
+                      ref={(el) => buttonRefs.current[vehicle._id] = el}
+                      onMouseEnter={() => handleButtonHover(vehicle._id, true)}
+                      onMouseLeave={() => handleButtonHover(vehicle._id, false)}
+                    >
                       View Details & Book
                       <span className="btn-arrow">→</span>
                     </Link>
