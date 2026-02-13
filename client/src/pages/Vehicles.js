@@ -213,103 +213,113 @@ const Vehicles = () => {
               <span>Found {vehicles.length} vehicle{vehicles.length !== 1 ? 's' : ''}</span>
             </div>
             <div className="vehicles-grid">
-              {vehicles.map((vehicle) => (
-                <div key={vehicle._id} className="vehicle-card">
-                  <div className="vehicle-image-container">
-                    {vehicle.images && vehicle.images.length > 0 ? (
-                      <img
-                        src={`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${vehicle.images[0]}`}
-                        alt={vehicle.name}
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          e.target.nextElementSibling.style.display = 'flex';
-                        }}
-                      />
-                    ) : null}
-                    <div className="placeholder-image" style={vehicle.images && vehicle.images.length > 0 ? { display: 'none' } : {}}>
-                      <span className="vehicle-emoji">{getVehicleIcon(vehicle.type)}</span>
-                      <span className="vehicle-type-text">{vehicle.type}</span>
-                    </div>
-                    <div className="availability-badge">
-                      <span className="badge-dot"></span>
-                      Available
-                    </div>
-                  </div>
-
-                  <div className="vehicle-content">
-                    <div className="vehicle-header">
-                      <h3>{vehicle.name}</h3>
-                      <span className="vehicle-category">{vehicle.category}</span>
+              {vehicles.map((vehicle) => {
+                const status = getAvailabilityStatus(vehicle.availability);
+                return (
+                  <div key={vehicle._id} className={`vehicle-card ${status.cardOpacity} transition-opacity duration-300`}>
+                    <div className="vehicle-image-container">
+                      {vehicle.images && vehicle.images.length > 0 ? (
+                        <img
+                          src={`${process.env.REACT_APP_API_URL || 'http://localhost:5000'}${vehicle.images[0]}`}
+                          alt={vehicle.name}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.nextElementSibling.style.display = 'flex';
+                          }}
+                        />
+                      ) : null}
+                      <div className="placeholder-image" style={vehicle.images && vehicle.images.length > 0 ? { display: 'none' } : {}}>
+                        <span className="vehicle-emoji">{getVehicleIcon(vehicle.type)}</span>
+                        <span className="vehicle-type-text">{vehicle.type}</span>
+                      </div>
+                      {/* Dynamic Availability Badge */}
+                      <div className={`absolute top-3 right-3 px-3 py-1.5 rounded-full text-xs font-semibold border backdrop-blur-sm ${status.badgeClass} flex items-center gap-1.5 shadow-lg`}>
+                        <span className={`w-2 h-2 rounded-full ${status.dotClass}`}></span>
+                        {status.label}
+                      </div>
                     </div>
 
-                    <div className="vehicle-details">
-                      <p className="vehicle-brand">
-                        <span className="detail-icon">🏷️</span>
-                        {vehicle.brand} {vehicle.model}
-                      </p>
-                      <p className="vehicle-location">
-                        <span className="detail-icon">📍</span>
-                        {vehicle.location?.city || 'N/A'}, {vehicle.location?.state || 'N/A'}
-                      </p>
+                    <div className="vehicle-content">
+                      <div className="vehicle-header">
+                        <h3>{vehicle.name}</h3>
+                        <span className="vehicle-category">{vehicle.category}</span>
+                      </div>
 
-                      {vehicle.specifications && (
-                        <div className="vehicle-specs">
-                          {vehicle.specifications.seatingCapacity && (
-                            <span className="spec-badge">
-                              👥 {vehicle.specifications.seatingCapacity} seats
-                            </span>
-                          )}
-                          {vehicle.specifications.fuelType && (
-                            <span className="spec-badge">
-                              ⛽ {vehicle.specifications.fuelType}
-                            </span>
-                          )}
-                          {vehicle.specifications.mileage && (
-                            <span className="spec-badge">
-                              📊 {vehicle.specifications.mileage}
-                            </span>
-                          )}
+                      <div className="vehicle-details">
+                        <p className="vehicle-brand">
+                          <span className="detail-icon">🏷️</span>
+                          {vehicle.brand} {vehicle.model}
+                        </p>
+                        <p className="vehicle-location">
+                          <span className="detail-icon">📍</span>
+                          {vehicle.location?.city || 'N/A'}, {vehicle.location?.state || 'N/A'}
+                        </p>
+
+                        {vehicle.specifications && (
+                          <div className="vehicle-specs">
+                            {vehicle.specifications.seatingCapacity && (
+                              <span className="spec-badge">
+                                👥 {vehicle.specifications.seatingCapacity} seats
+                              </span>
+                            )}
+                            {vehicle.specifications.fuelType && (
+                              <span className="spec-badge">
+                                ⛽ {vehicle.specifications.fuelType}
+                              </span>
+                            )}
+                            {vehicle.specifications.mileage && (
+                              <span className="spec-badge">
+                                📊 {vehicle.specifications.mileage}
+                              </span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="pricing-section">
+                        <div
+                          className={`price-item ${getSelectedPricing(vehicle._id) === 'hourly' ? 'selected' : ''}`}
+                          onClick={() => handlePricingSelect(vehicle._id, 'hourly')}
+                        >
+                          <span className="price-label">Hourly</span>
+                          <span className="price-value">₹{vehicle.pricing?.hourly || 0}</span>
                         </div>
+                        <div
+                          className={`price-item ${getSelectedPricing(vehicle._id) === 'daily' ? 'selected' : ''}`}
+                          onClick={() => handlePricingSelect(vehicle._id, 'daily')}
+                        >
+                          <span className="price-label">Daily</span>
+                          <span className="price-value">₹{vehicle.pricing?.daily || 0}</span>
+                        </div>
+                        <div
+                          className={`price-item ${getSelectedPricing(vehicle._id) === 'weekly' ? 'selected' : ''}`}
+                          onClick={() => handlePricingSelect(vehicle._id, 'weekly')}
+                        >
+                          <span className="price-label">Weekly</span>
+                          <span className="price-value">₹{vehicle.pricing?.weekly || 0}</span>
+                        </div>
+                      </div>
+
+                      {status.disabled ? (
+                        <div className="view-details-btn opacity-50 cursor-not-allowed bg-gray-400 hover:bg-gray-400">
+                          {status.label === 'Booked' ? 'Currently Booked' : status.label}
+                        </div>
+                      ) : (
+                        <Link
+                          to={`/vehicles/${vehicle._id}`}
+                          className="view-details-btn"
+                          ref={(el) => buttonRefs.current[vehicle._id] = el}
+                          onMouseEnter={() => handleButtonHover(vehicle._id, true)}
+                          onMouseLeave={() => handleButtonHover(vehicle._id, false)}
+                        >
+                          View Details & Book
+                          <span className="btn-arrow">→</span>
+                        </Link>
                       )}
                     </div>
-
-                    <div className="pricing-section">
-                      <div
-                        className={`price-item ${getSelectedPricing(vehicle._id) === 'hourly' ? 'selected' : ''}`}
-                        onClick={() => handlePricingSelect(vehicle._id, 'hourly')}
-                      >
-                        <span className="price-label">Hourly</span>
-                        <span className="price-value">₹{vehicle.pricing?.hourly || 0}</span>
-                      </div>
-                      <div
-                        className={`price-item ${getSelectedPricing(vehicle._id) === 'daily' ? 'selected' : ''}`}
-                        onClick={() => handlePricingSelect(vehicle._id, 'daily')}
-                      >
-                        <span className="price-label">Daily</span>
-                        <span className="price-value">₹{vehicle.pricing?.daily || 0}</span>
-                      </div>
-                      <div
-                        className={`price-item ${getSelectedPricing(vehicle._id) === 'weekly' ? 'selected' : ''}`}
-                        onClick={() => handlePricingSelect(vehicle._id, 'weekly')}
-                      >
-                        <span className="price-label">Weekly</span>
-                        <span className="price-value">₹{vehicle.pricing?.weekly || 0}</span>
-                      </div>
-                    </div>
-
-                    <Link
-                      to={`/vehicles/${vehicle._id}`}
-                      className="view-details-btn"
-                      ref={(el) => buttonRefs.current[vehicle._id] = el}
-                      onMouseEnter={() => handleButtonHover(vehicle._id, true)}
-                      onMouseLeave={() => handleButtonHover(vehicle._id, false)}
-                    >
-                      View Details & Book
-                      <span className="btn-arrow">→</span>
-                    </Link>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </>
         )}

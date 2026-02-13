@@ -187,7 +187,7 @@ router.put('/:id/cancel', protect, async (req, res) => {
     // Calculate refund based on cancellation time
     const hoursUntilStart = moment(booking.startDate).diff(moment(), 'hours');
     let refundAmount = 0;
-    
+
     if (hoursUntilStart > 24) {
       refundAmount = booking.pricing.totalAmount * 0.9; // 90% refund
     } else if (hoursUntilStart > 12) {
