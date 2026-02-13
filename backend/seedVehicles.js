@@ -39,9 +39,9 @@ cities.forEach(city => {
     model: 'Activa 6G',
     registrationNumber: `${prefixMap[city]}01AB${regCounter++}`,
     specifications: { seatingCapacity: 2, fuelType: 'petrol', mileage: '50 km/l', year: 2023 },
-    pricing: { hourly: 150, daily: 750, weekly: 4200, securityDeposit: 2000 },
-    location: { 
-      city, 
+    pricing: { hourly: 150, daily: 750, weekly: 4200, securityDeposit: 100 },
+    location: {
+      city,
       state: stateMap[city],
       area: 'Central Area',
       pickupPoint: {
@@ -61,9 +61,9 @@ cities.forEach(city => {
     model: '450X',
     registrationNumber: `${prefixMap[city]}02EL${regCounter++}`,
     specifications: { seatingCapacity: 2, fuelType: 'electric', mileage: '85 km/charge', year: 2023 },
-    pricing: { hourly: 120, daily: 600, weekly: 3500, securityDeposit: 2500 },
-    location: { 
-      city, 
+    pricing: { hourly: 120, daily: 600, weekly: 3500, securityDeposit: 100 },
+    location: {
+      city,
       state: stateMap[city],
       area: 'Tech Hub',
       pickupPoint: {
@@ -84,9 +84,9 @@ cities.forEach(city => {
     model: 'Pulsar 150',
     registrationNumber: `${prefixMap[city]}03MC${regCounter++}`,
     specifications: { seatingCapacity: 2, fuelType: 'petrol', mileage: '45 km/l', year: 2023 },
-    pricing: { hourly: 180, daily: 900, weekly: 5500, securityDeposit: 3000 },
-    location: { 
-      city, 
+    pricing: { hourly: 180, daily: 900, weekly: 5500, securityDeposit: 100 },
+    location: {
+      city,
       state: stateMap[city],
       area: 'Market Area',
       pickupPoint: {
@@ -106,9 +106,9 @@ cities.forEach(city => {
     model: 'Classic 350',
     registrationNumber: `${prefixMap[city]}04RE${regCounter++}`,
     specifications: { seatingCapacity: 2, fuelType: 'petrol', mileage: '35 km/l', year: 2023 },
-    pricing: { hourly: 200, daily: 1000, weekly: 6000, securityDeposit: 3500 },
-    location: { 
-      city, 
+    pricing: { hourly: 200, daily: 1000, weekly: 6000, securityDeposit: 100 },
+    location: {
+      city,
       state: stateMap[city],
       area: 'Downtown',
       pickupPoint: {
@@ -129,9 +129,9 @@ cities.forEach(city => {
     model: 'Swift Dzire',
     registrationNumber: `${prefixMap[city]}05CR${regCounter++}`,
     specifications: { seatingCapacity: 5, fuelType: 'petrol', mileage: '22 km/l', year: 2023 },
-    pricing: { hourly: 300, daily: 1500, weekly: 9000, securityDeposit: 5000 },
-    location: { 
-      city, 
+    pricing: { hourly: 300, daily: 1500, weekly: 9000, securityDeposit: 150 },
+    location: {
+      city,
       state: stateMap[city],
       area: 'Residential',
       pickupPoint: {
@@ -152,9 +152,9 @@ cities.forEach(city => {
     model: 'Road Runner',
     registrationNumber: `${prefixMap[city]}06CY${regCounter++}`,
     specifications: { seatingCapacity: 1, fuelType: 'manual', mileage: 'N/A', year: 2023 },
-    pricing: { hourly: 50, daily: 200, weekly: 1000, securityDeposit: 500 },
-    location: { 
-      city, 
+    pricing: { hourly: 50, daily: 200, weekly: 1000, securityDeposit: 50 },
+    location: {
+      city,
       state: stateMap[city],
       area: 'Park Area',
       pickupPoint: {

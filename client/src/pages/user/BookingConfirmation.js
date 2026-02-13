@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { animate } from 'animejs';
 import * as THREE from 'three';
 import { QRCodeSVG } from 'qrcode.react';
 import './BookingConfirmation.css';
@@ -185,65 +184,18 @@ const BookingConfirmation = () => {
     };
   }, []);
 
-  /* ---- Page load animations ---- */
+  /* ---- Page load animations removed - using CSS transitions instead ---- */
   useEffect(() => {
     if (loading || !booking || !pageRef.current) return;
 
-    // Sequential animations without timeline
-    animate({
-      targets: '.bkc-header',
-      opacity: [0, 1],
-      translateY: [-30, 0],
-      duration: 700,
-      easing: 'easeOutQuart',
+    // Simple fade-in with CSS - remove opacity: 0 from elements
+    const elements = pageRef.current.querySelectorAll('[style*="opacity: 0"]');
+    elements.forEach((el, i) => {
+      setTimeout(() => {
+        el.style.opacity = '1';
+        el.style.transition = 'opacity 0.5s ease';
+      }, i * 100);
     });
-
-    setTimeout(() => {
-      animate({
-        targets: '.bkc-qr-section',
-        opacity: [0, 1],
-        scale: [0.85, 1],
-        duration: 800,
-        easing: 'easeOutQuart',
-      });
-    }, 300);
-
-    setTimeout(() => {
-      animate({
-        targets: '.bkc-detail-card',
-        opacity: [0, 1],
-        translateY: [25, 0],
-        duration: 600,
-        delay: function (el, i) { return i * 100; },
-        easing: 'easeOutQuart',
-      });
-    }, 500);
-
-    setTimeout(() => {
-      animate({
-        targets: '.bkc-actions',
-        opacity: [0, 1],
-        translateY: [20, 0],
-        duration: 500,
-        easing: 'easeOutQuart',
-      });
-    }, 800);
-
-    // Pulse QR code
-    const qrEl = pageRef.current.querySelector('.bkc-qr-glow');
-    if (qrEl) {
-      animate({
-        targets: qrEl,
-        boxShadow: [
-          '0 0 20px rgba(230,126,34,0.15)',
-          '0 0 40px rgba(230,126,34,0.30)',
-          '0 0 20px rgba(230,126,34,0.15)',
-        ],
-        duration: 2500,
-        loop: true,
-        easing: 'easeInOutSine',
-      });
-    }
   }, [loading, booking]);
 
   /* ---- Handle UPI payment deep links ---- */
@@ -258,16 +210,12 @@ const BookingConfirmation = () => {
       bhim: generateUPIString(booking)
     };
 
-    // Animate button
+    // Button click effect (CSS transition)
     const buttons = document.querySelectorAll('.upi-app-btn');
     buttons.forEach(btn => {
       if (btn.dataset.app === app) {
-        animate({
-          targets: btn,
-          scale: [1, 1.15, 1],
-          duration: 400,
-          easing: 'easeOutQuad'
-        });
+        btn.style.transform = 'scale(1.1)';
+        setTimeout(() => { btn.style.transform = 'scale(1)'; }, 200);
       }
     });
 
@@ -300,27 +248,12 @@ const BookingConfirmation = () => {
           pollIntervalRef.current = null;
           toast.success('✅ Payment confirmed!');
 
-          // Success animation
+          // Success animation (CSS transition)
           setTimeout(() => {
             const checkEl = document.querySelector('.bkc-check-icon');
             if (checkEl) {
-              animate({
-                targets: checkEl,
-                rotate: [0, 360],
-                scale: [0, 1],
-                duration: 900,
-                easing: 'easeOutExpo'
-              });
-            }
-            const cards = document.querySelectorAll('.bkc-detail-card');
-            if (cards.length) {
-              animate({
-                targets: cards,
-                scale: [1, 1.02, 1],
-                duration: 500,
-                delay: function (el, i) { return i * 80; },
-                easing: 'easeOutQuad',
-              });
+              checkEl.style.transition = 'transform 0.9s ease';
+              checkEl.style.transform = 'rotate(360deg) scale(1)';
             }
           }, 100);
         }
@@ -352,23 +285,8 @@ const BookingConfirmation = () => {
       setTimeout(() => {
         const checkEl = document.querySelector('.bkc-check-icon');
         if (checkEl) {
-          animate({
-            targets: checkEl,
-            rotate: [0, 360],
-            scale: [0, 1],
-            duration: 900,
-            easing: 'easeOutExpo'
-          });
-        }
-        const cards = document.querySelectorAll('.bkc-detail-card');
-        if (cards.length) {
-          animate({
-            targets: cards,
-            scale: [1, 1.02, 1],
-            duration: 500,
-            delay: anime.stagger(80),
-            easing: 'easeOutQuad',
-          });
+          checkEl.style.transition = 'transform 0.9s ease';
+          checkEl.style.transform = 'rotate(360deg) scale(1)';
         }
       }, 100);
     }, 2000);
@@ -429,40 +347,31 @@ const BookingConfirmation = () => {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-amber-50 to-orange-100 relative overflow-hidden" ref={pageRef}>
       <ThreeConfirmBg />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-6 lg:py-8">
+      {/* Content overlay - more compact */}
+      <div className="relative z-10 py-3 sm:py-4 px-2 sm:px-3 max-w-6xl mx-auto">
         {/* Header */}
-        <div className="bkc-header mb-6" style={{ opacity: 0 }}>
-          <div className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 mb-4">
-            <Link to="/" className="hover:text-orange-600 transition-colors">Home</Link>
-            <span>/</span>
-            <Link to="/user/bookings" className="hover:text-orange-600 transition-colors">My Bookings</Link>
-            <span>/</span>
-            <span className="text-orange-600 font-semibold">Payment</span>
-          </div>
-
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6">
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-800 mb-2">🎉 Booking Confirmed!</h1>
-            <p className="text-xs sm:text-sm lg:text-base text-gray-600">
-              Complete your payment to secure your ride. Booking ID: <span className="font-mono font-bold text-orange-600">{booking.bookingId || booking._id}</span>
-            </p>
-          </div>
+        <div className="bkc-header text-center mb-3 sm:mb-4" style={{ opacity: 0 }}>
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent mb-1">
+            Booking Confirmation
+          </h1>
+          <p className="text-xs sm:text-sm text-gray-600">Booking ID: <span className="font-mono font-semibold">{booking.bookingId || booking._id}</span></p>
         </div>
 
         {/* Main Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
           {/* Left: Payment Section */}
           <div className="bkc-qr-section" style={{ opacity: 0 }}>
             {paymentStatus !== 'paid' ? (
-              <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl p-4 sm:p-6 lg:p-8">
-                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-xl p-3 sm:p-4">
+                <h3 className="text-base sm:text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
                   <span>📱</span> Scan & Pay
                 </h3>
 
                 {/* QR Code */}
-                <div className="relative mb-6">
-                  <div className="bkc-qr-glow bg-gradient-to-br from-orange-100 to-amber-100 p-6 rounded-2xl flex justify-center items-center mx-auto" style={{ maxWidth: '240px' }}>
-                    <div className="bg-white p-4 rounded-xl shadow-lg">
-                      <QRCodeSVG value={upiString} size={180} level="H" />
+                <div className="relative mb-4">
+                  <div className="bkc-qr-glow bg-gradient-to-br from-orange-100 to-amber-100 p-3 rounded-xl flex justify-center items-center mx-auto" style={{ maxWidth: '200px' }}>
+                    <div className="bg-white p-3 rounded-lg shadow-lg">
+                      <QRCodeSVG value={upiString} size={140} level="H" />
                     </div>
                   </div>
                   {isExpired && (
@@ -477,9 +386,9 @@ const BookingConfirmation = () => {
                 </div>
 
                 {/* Amount & Timer */}
-                <div className="text-center mb-6">
-                  <p className="text-xs sm:text-sm text-gray-600 mb-1">Amount to Pay</p>
-                  <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-orange-600">₹{booking.pricing?.totalAmount?.toLocaleString()}</p>
+                <div className="text-center mb-4">
+                  <p className="text-2xl sm:text-3xl font-bold text-gray-800 mb-1">₹{booking.pricing?.totalAmount?.toLocaleString()}</p>
+                  <p className="text-xs text-gray-500 mb-2">Total Amount</p>
                   {!isExpired && (
                     <p className="text-xs sm:text-sm text-gray-500 mt-2">
                       ⏱️ Expires in <strong>{formatTime(countdown)}</strong>
@@ -535,7 +444,7 @@ const BookingConfirmation = () => {
                 </div>
 
                 {/* Divider */}
-                <div className="flex items-center gap-3 mb-6">
+                <div className="flex items-center gap-3 mb-3">
                   <div className="flex-1 h-px bg-gray-300"></div>
                   <span className="text-xs text-gray-500">or</span>
                   <div className="flex-1 h-px bg-gray-300"></div>
@@ -588,7 +497,7 @@ const BookingConfirmation = () => {
           {/* Right: Booking Details */}
           <div className="space-y-4 sm:space-y-6">
             {/* Vehicle Card */}
-            <div className="bkc-detail-card bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6" style={{ opacity: 0 }}>
+            <div className="bkc-detail-card bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 sm:p-4" style={{ opacity: 0 }}>
               <h4 className="text-base sm:text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
                 <span>🚗</span> Vehicle
               </h4>
@@ -607,7 +516,7 @@ const BookingConfirmation = () => {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <h5 className="text-sm sm:text-base font-bold text-gray-800">{vehicle?.name || 'Vehicle'} ({vehicle?.location || 'N/A'})</h5>
+                  <h5 className="text-sm sm:text-base font-bold text-gray-800">{vehicle?.name || 'Vehicle'} ({vehicle?.location?.city || 'N/A'})</h5>
                   <p className="text-xs sm:text-sm text-gray-600">{vehicle?.model || 'Model not specified'}</p>
                   <p className="text-xs text-gray-500 mt-1">
                     {vehicle?.type || 'car'} • {vehicle?.isElectric ? 'Electric' : 'Non-Electric'}
@@ -617,7 +526,7 @@ const BookingConfirmation = () => {
             </div>
 
             {/* Rental Details */}
-            <div className="bkc-detail-card bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6" style={{ opacity: 0 }}>
+            <div className="bkc-detail-card bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 sm:p-4" style={{ opacity: 0 }}>
               <h4 className="text-base sm:text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
                 <span>📅</span> Rental Period
               </h4>
@@ -638,7 +547,7 @@ const BookingConfirmation = () => {
             </div>
 
             {/* Price Breakdown  */}
-            <div className="bkc-detail-card bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6" style={{ opacity: 0 }}>
+            <div className="bkc-detail-card bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 sm:p-4" style={{ opacity: 0 }}>
               <h4 className="text-base sm:text-lg font-bold text-gray-800 mb-3 flex items-center gap-2">
                 <span>💰</span> Price Breakdown
               </h4>
@@ -667,7 +576,7 @@ const BookingConfirmation = () => {
             </div>
 
             {/* Status Card */}
-            <div className="bkc-detail-card bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-4 sm:p-6" style={{ opacity: 0 }}>
+            <div className="bkc-detail-card bg-white/95 backdrop-blur-sm rounded-xl shadow-lg p-3 sm:p-4" style={{ opacity: 0 }}>
               <div className="space-y-2 text-xs sm:text-sm">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Booking Status</span>

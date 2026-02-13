@@ -86,6 +86,40 @@ const Vehicles = () => {
     return icons[type] || '🚗';
   };
 
+  const getAvailabilityStatus = (availability) => {
+    const statusConfig = {
+      'available': {
+        label: 'Available',
+        badgeClass: 'bg-green-100 text-green-800 border-green-300',
+        dotClass: 'bg-green-500 animate-pulse',
+        cardOpacity: 'opacity-100',
+        disabled: false
+      },
+      'rented': {
+        label: 'Booked',
+        badgeClass: 'bg-red-100 text-red-800 border-red-300',
+        dotClass: 'bg-red-500',
+        cardOpacity: 'opacity-75',
+        disabled: true
+      },
+      'maintenance': {
+        label: 'Maintenance',
+        badgeClass: 'bg-yellow-100 text-yellow-800 border-yellow-300',
+        dotClass: 'bg-yellow-500',
+        cardOpacity: 'opacity-75',
+        disabled: true
+      },
+      'inactive': {
+        label: 'Unavailable',
+        badgeClass: 'bg-gray-100 text-gray-800 border-gray-300',
+        dotClass: 'bg-gray-500',
+        cardOpacity: 'opacity-60',
+        disabled: true
+      }
+    };
+    return statusConfig[availability] || statusConfig['available'];
+  };
+
   /* ---- anime.js staggered card entry ---- */
   const animateCards = useCallback(() => {
     requestAnimationFrame(() => {
