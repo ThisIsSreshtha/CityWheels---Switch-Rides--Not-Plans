@@ -104,7 +104,7 @@ const Register = () => {
       >
         {/* Logo/Icon */}
         <div className="flex justify-center mb-4">
-          <div className="bg-gradient-to-br from-emerald-500 to-teal-600 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform">
+          <div className="bg-gradient-to-br from-amber-500 to-orange-600 w-14 h-14 rounded-2xl flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform">
             <span className="text-2xl">🚲</span>
           </div>
         </div>
@@ -289,7 +289,7 @@ const Register = () => {
           {/* Register Button */}
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] transition-all mt-2"
+            className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-[1.02] active:scale-[0.98] transition-all mt-2"
           >
             Create Account
           </button>
