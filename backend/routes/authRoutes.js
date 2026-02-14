@@ -25,8 +25,16 @@ router.post('/register', [
       });
     }
 
-    // Only allow 'user', 'owner', or 'admin' roles during registration
-    const allowedRole = ['user', 'owner', 'admin'].includes(role) ? role : 'user';
+    // Block admin registration - admin account is hardcoded and cannot be created via registration
+    if (role === 'admin') {
+      return res.status(403).json({
+        success: false,
+        message: 'Admin registration is not allowed. Admin account is system-controlled.'
+      });
+    }
+
+    // Only allow 'user' or 'owner' roles during registration
+    const allowedRole = ['user', 'owner'].includes(role) ? role : 'user';
 
     // Create user
     const user = await User.create({
