@@ -55,6 +55,13 @@ module.exports = {
         'pulse-slow': 'pulse 3s ease-in-out infinite',
         'float': 'float 3s ease-in-out infinite',
         'shimmer': 'shimmer 2s linear infinite',
+        'fadeIn': 'fadeIn 0.3s ease-out',
+        'scaleIn': 'scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'checkPop': 'checkPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s forwards',
+        'checkmark': 'checkmark 0.3s ease-out 0.5s forwards',
+        'scooterRide': 'scooterRide 2.5s ease-in-out infinite',
+        'roadScroll': 'roadScroll 0.5s linear infinite',
+        'smokePuff': 'smokePuff 0.8s ease-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -92,6 +99,32 @@ module.exports = {
         shimmer: {
           '0%': { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
+        },
+        checkPop: {
+          '0%': { transform: 'scale(0)', opacity: '0' },
+          '50%': { transform: 'scale(1.1)' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
+        },
+        checkmark: {
+          '0%': { strokeDasharray: '0, 100', opacity: '0' },
+          '100%': { strokeDasharray: '100, 100', opacity: '1' },
+        },
+        scooterRide: {
+          '0%': { left: '-15%', transform: 'translateY(0)' },
+          '20%': { transform: 'translateY(-2px)' },
+          '35%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-3px)' },
+          '65%': { transform: 'translateY(0)' },
+          '80%': { transform: 'translateY(-1px)' },
+          '100%': { left: '100%', transform: 'translateY(0)' },
+        },
+        roadScroll: {
+          '0%': { backgroundPosition: '0 0' },
+          '100%': { backgroundPosition: '-24px 0' },
+        },
+        smokePuff: {
+          '0%': { opacity: '0.6', transform: 'translate(0, 0) scale(1)' },
+          '100%': { opacity: '0', transform: 'translate(-12px, -8px) scale(1.8)' },
         },
       },
       screens: {

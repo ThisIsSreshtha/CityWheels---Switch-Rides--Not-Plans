@@ -115,17 +115,19 @@ const Navbar = () => {
 
           {isAuthenticated ? (
             <>
-              {isAdmin ? (
-                <li><Link to="/admin/home" onClick={closeMobileMenu}>Dashboard</Link></li>
-              ) : isOwner ? (
-                <li><Link to="/owner/dashboard" onClick={closeMobileMenu}>Dashboard</Link></li>
-              ) : (
-                <li><Link to="/user/dashboard" onClick={closeMobileMenu}>Dashboard</Link></li>
-              )}
+              <li>
+                <Link to="/login" className="btn btn-secondary" onClick={closeMobileMenu}>
+                  Login
+                </Link>
+              </li>
             </>
           ) : (
             <>
-              <li><Link to="/login" onClick={closeMobileMenu}>Login</Link></li>
+              <li>
+                <Link to="/login" className="btn btn-secondary" onClick={closeMobileMenu}>
+                  Login
+                </Link>
+              </li>
               <li>
                 <Link to="/register" className="btn btn-primary" onClick={closeMobileMenu}>
                   Register
