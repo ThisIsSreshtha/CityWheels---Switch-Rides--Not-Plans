@@ -13,25 +13,24 @@ const Home = () => {
   useEffect(() => {
     if (!heroContentRef.current) return;
 
-    const tl = createTimeline({ defaults: { ease: 'outExpo' } });
+    try {
+      const tl = createTimeline({ defaults: { ease: 'outExpo' } });
+      const title = heroContentRef.current.querySelector('.hero-title');
+      const subtitle = heroContentRef.current.querySelector('.hero-subtitle');
+      const btns = heroContentRef.current.querySelectorAll('.hero-buttons .btn');
 
-    tl.add(heroContentRef.current.querySelector('h1'), {
-      opacity: [0, 1],
-      translateY: [40, 0],
-      duration: 900,
-    })
-    .add(heroContentRef.current.querySelector('.hero-subtitle'), {
-      opacity: [0, 1],
-      translateY: [30, 0],
-      duration: 800,
-    }, '-=600')
-    .add(heroContentRef.current.querySelectorAll('.hero-buttons .btn'), {
-      opacity: [0, 1],
-      translateY: [20, 0],
-      scale: [0.9, 1],
-      duration: 600,
-      delay: stagger(120),
-    }, '-=500');
+      if (title) {
+        tl.add(title, { opacity: [0, 1], translateY: [40, 0], duration: 900 });
+      }
+      if (subtitle) {
+        tl.add(subtitle, { opacity: [0, 1], translateY: [30, 0], duration: 800 }, '-=600');
+      }
+      if (btns && btns.length) {
+        tl.add(btns, { opacity: [0, 1], translateY: [20, 0], scale: [0.9, 1], duration: 600, delay: stagger(120) }, '-=500');
+      }
+    } catch (err) {
+      console.warn('Hero animation error:', err);
+    }
   }, []);
 
   /* ---- Scroll-triggered section animations ---- */
@@ -107,42 +106,12 @@ const Home = () => {
           <div className="marker-time">🕐 10:45 AM</div>
         </div>
         
-        {/* Fare Display */}
-        <div className="fare-display">
-          <div className="fare-icon">💵</div>
-          <div className="fare-amount">₹250</div>
-          <div className="fare-label">Total Fare</div>
-        </div>
-        
         {/* Car Animation */}
         <div className="vehicle-container">
           <div className="rider-in-car">
             <span className="car">🚗</span>
-            <span className="passenger-in-car">🧑‍💼</span>
           </div>
         </div>
-        
-        {/* Passenger waiting at pickup */}
-        <div className="waiting-passenger">🧑‍💼</div>
-        
-        {/* Verified Badge at Pickup */}
-        <div className="verified-badge-pickup">
-          <span className="verified-icon">✅</span>
-        </div>
-        
-        {/* Passenger at drop-off */}
-        <div className="dropped-passenger">🧑‍💼</div>
-        
-        {/* Thought Cloud with Satisfaction */}
-        <div className="thought-cloud-container">
-          <div className="thought-cloud large">
-            <span className="satisfaction-emoji">😊</span>
-          </div>
-          <div className="thought-cloud small"></div>
-          <div className="thought-cloud tiny"></div>
-        </div>
-        
-        <div className="dust-trail"></div>
         
         {/* Clouds */}
         <div className="cloud cloud1"></div>
@@ -151,7 +120,7 @@ const Home = () => {
         
         <div className="container">
           <div className="hero-content" ref={heroContentRef}>
-            <h1 style={{ opacity: 0 }}>Switch Rides, Not Plans</h1>
+            <h1 className="hero-title" style={{ opacity: 0 }}>Switch Rides, Not Plans</h1>
             <p className="hero-subtitle" style={{ opacity: 0 }}>
               Rent scooters, motorcycles, bicycles, and cars across India. 
               Flexible hourly, daily, or weekly rentals with transparent pricing.

@@ -4,12 +4,31 @@
 }
 
 .hero {
-  background: linear-gradient(135deg, #fffbf0 0%, #fef5e7 50%, #fff8e8 100%);
-  color: #333;
-  padding: clamp(60px, 10vw, 100px) 0 clamp(120px, 18vw, 200px);
+  background: linear-gradient(160deg, #fdf8f0 0%, #fef3e2 30%, #fdf0d5 60%, #fef6ea 100%);
+  color: #2d3748;
+  padding: clamp(70px, 12vw, 120px) 0 clamp(130px, 18vw, 210px);
   text-align: center;
   position: relative;
   overflow: hidden;
+}
+
+/* Subtle radial glow behind content */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  width: 800px;
+  height: 600px;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    ellipse,
+    rgba(102, 126, 234, 0.06) 0%,
+    rgba(255, 152, 0, 0.03) 40%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 1;
 }
 
 /* Animated Road */
@@ -176,111 +195,29 @@
   border: 2px solid rgba(102, 126, 234, 0.3);
 }
 
-/* Fare Display */
-.hero .fare-display {
-  position: absolute;
-  top: 25%;
-  right: 20%;
-  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
-  padding: 8px 14px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(72, 187, 120, 0.4);
-  text-align: center;
-  z-index: 4;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  animation: farePopup 15s ease-in-out infinite;
-  opacity: 0;
-  transform: scale(0);
-}
-
-.hero .fare-icon {
-  font-size: 1.2rem;
-  margin-bottom: 2px;
-}
-
-.hero .fare-amount {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  margin-bottom: 2px;
-}
-
-.hero .fare-label {
-  font-size: 0.6rem;
-  color: rgba(255, 255, 255, 0.95);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-@keyframes farePopup {
-  0%, 47% {
-    opacity: 0;
-    transform: scale(0);
-  }
-  48%, 49% {
-    opacity: 1;
-    transform: scale(1.2);
-  }
-  50%, 65% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  66%, 100% {
-    opacity: 0;
-    transform: scale(0);
-  }
-}
-
 @keyframes markerBounce {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  50% { transform: translateY(-8px); }
 }
 
 /* Car Animation */
 .hero .vehicle-container {
   position: absolute;
-  bottom: 35px;
+  bottom: 28px;
   left: -150px;
   z-index: 3;
-  animation: rideCar 15s ease-in-out infinite;
+  animation: rideCar 12s ease-in-out infinite;
 }
 
 @keyframes rideCar {
-  0% {
-    left: -150px;
-    transform: scaleX(-1);
-  }
-  48% {
-    left: 10%;
-    transform: scaleX(-1);
-  }
-  50% {
-    left: 10%;
-    transform: scaleX(-1);
-  }
-  52% {
-    left: 10%;
-    transform: scaleX(-1);
-  }
-  96% {
-    left: calc(90% - 150px);
-    transform: scaleX(-1);
-  }
-  98% {
-    left: calc(90% - 150px);
-    transform: scaleX(-1);
-  }
-  100% {
-    left: calc(90% - 150px);
-    transform: scaleX(-1);
-  }
+  0%   { left: -150px; transform: scaleX(-1); }
+  50%  { left: calc(50% - 75px); transform: scaleX(-1); }
+  100% { left: calc(100% + 20px); transform: scaleX(-1); }
 }
 
 .hero .car {
-  font-size: 8rem;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.3));
+  font-size: 7rem;
+  filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.25));
   position: relative;
   z-index: 1;
 }
@@ -289,7 +226,7 @@
   display: inline-flex;
   align-items: center;
   position: relative;
-  animation: carBounce 0.5s ease-in-out infinite;
+  animation: carBounce 0.45s ease-in-out infinite;
 }
 
 @keyframes carBounce {
@@ -297,383 +234,96 @@
   50% { transform: translateY(-3px); }
 }
 
-.hero .passenger-in-car {
-  font-size: 1.5rem;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-  position: absolute;
-  left: 50px;
-  top: 35px;
-  z-index: 0;
-  animation: passengerInCar 15s ease-in-out infinite;
-  opacity: 0;
-}
-
-@keyframes passengerInCar {
-  0%, 49% {
-    opacity: 0;
-  }
-  50%, 95% {
-    opacity: 0.9;
-  }
-  96%, 100% {
-    opacity: 0;
-  }
-}
-
-.hero .driver-in-window {
-  font-size: 1.5rem;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-  position: absolute;
-  left: 50px;
-  top: 35px;
-  z-index: 0;
-  animation: driverInCar 15s ease-in-out infinite;
-}
-
-@keyframes driverInCar {
-  0%, 48% {
-    opacity: 0.9;
-  }
-  49%, 100% {
-    opacity: 0;
-  }
-}
-
-/* Dropped Passenger */
-.hero .dropped-passenger {
-  position: absolute;
-  bottom: 125px;
-  right: 6%;
-  font-size: 1.8rem;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-  z-index: 2;
-  animation: passengerAppear 15s ease-in-out infinite;
-  opacity: 0;
-}
-
-/* Passenger waiting at pickup */
-.hero .waiting-passenger {
-  position: absolute;
-  bottom: 125px;
-  left: 10%;
-  font-size: 1.8rem;
-  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-  z-index: 2;
-  animation: waitingPassenger 15s ease-in-out infinite;
-  opacity: 1;
-}
-
-@keyframes waitingPassenger {
-  0%, 49% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  50%, 100% {
-    opacity: 0;
-    transform: translateY(0);
-  }
-}
-
-/* Verified Badge at Pickup */
-.hero .verified-badge-pickup {
-  position: absolute;
-  left: 8%;
-  bottom: 105px;
-  background: linear-gradient(135deg, #4ade80, #22c55e);
-  padding: 10px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
-  border: 3px solid rgba(255, 255, 255, 0.9);
-  z-index: 4;
-  animation: verifiedAppear 15s ease-in-out infinite;
-  opacity: 0;
-}
-
-.hero .verified-icon {
-  font-size: 1.5rem;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-@keyframes verifiedAppear {
-  0%, 46% {
-    opacity: 0;
-    transform: scale(0.5) translateY(10px);
-  }
-  47% {
-    opacity: 1;
-    transform: scale(1.2) translateY(-3px);
-  }
-  48% {
-    transform: scale(1) translateY(0);
-  }
-  49%, 50% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-  51%, 100% {
-    opacity: 0;
-    transform: scale(0.5) translateY(10px);
-  }
-}
-
-/* Thought Cloud */
-.hero .thought-cloud-container {
-  position: absolute;
-  bottom: 175px;
-  right: 4%;
-  z-index: 3;
-  animation: thoughtAppear 15s ease-in-out infinite;
-  opacity: 0;
-}
-
-.hero .thought-cloud {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 248, 255, 0.9));
-  position: absolute;
-  border: 2px solid rgba(100, 149, 237, 0.3);
-  box-shadow: 0 4px 12px rgba(100, 149, 237, 0.2), inset 0 2px 4px rgba(255, 255, 255, 0.5);
-}
-
-.hero .thought-cloud.large {
-  width: 60px;
-  height: 38px;
-  border-radius: 20px;
-  bottom: 35px;
-  right: -5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.hero .thought-cloud.large::before {
-  content: '';
-  position: absolute;
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 248, 255, 0.9));
-  border: 2px solid rgba(100, 149, 237, 0.3);
-  border-radius: 50%;
-  top: -18px;
-  left: 5px;
-  box-shadow: 0 2px 4px rgba(100, 149, 237, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.5);
-}
-
-.hero .thought-cloud.large::after {
-  content: '';
-  position: absolute;
-  width: 38px;
-  height: 38px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 248, 255, 0.9));
-  border: 2px solid rgba(100, 149, 237, 0.3);
-  border-radius: 50%;
-  top: -22px;
-  right: 3px;
-  box-shadow: 0 2px 4px rgba(100, 149, 237, 0.15), inset 0 1px 2px rgba(255, 255, 255, 0.5);
-}
-
-.hero .thought-cloud.small {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  bottom: 18px;
-  right: 8px;
-}
-
-.hero .thought-cloud.tiny {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  bottom: 5px;
-  right: 12px;
-}
-
-/* Satisfaction Emoji inside thought cloud */
-.hero .satisfaction-emoji {
-  font-size: 1.3rem;
-  z-index: 2;
-  position: relative;
-  animation: emojiSatisfied 3s ease-in-out infinite;
-}
-
-@keyframes emojiSatisfied {
-  0%, 100% { 
-    transform: scale(1) rotate(0deg); 
-  }
-  15% { 
-    transform: scale(1.15) rotate(-5deg); 
-  }
-  30% { 
-    transform: scale(1.05) rotate(5deg); 
-  }
-  45% { 
-    transform: scale(1.1) rotate(-3deg); 
-  }
-  60% { 
-    transform: scale(1) rotate(0deg); 
-  }
-}
-
-@keyframes thoughtAppear {
-  0%, 95% {
-    opacity: 0;
-    transform: scale(0) translateY(-5px);
-  }
-  96% {
-    opacity: 0;
-    transform: scale(0.3) translateY(-3px);
-  }
-  97% {
-    opacity: 1;
-    transform: scale(1.15) translateY(2px);
-  }
-  98% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-  99%, 100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
-}
-
-@keyframes passengerAppear {
-  0%, 95% {
-    opacity: 0;
-    transform: translateY(0);
-  }
-  96% {
-    opacity: 0.5;
-    transform: translateY(-5px);
-  }
-  97%, 100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes carBounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
-}
-
-/* Dust/Trail Effect */
-.hero .dust-trail {
-  position: absolute;
-  bottom: 115px;
-  width: 60px;
-  height: 20px;
-  background: radial-gradient(ellipse, rgba(255, 255, 255, 0.5) 0%, transparent 70%);
-  border-radius: 50%;
-  animation: dustMove 20s ease-in-out infinite;
-  opacity: 0;
-  z-index: 2;
-}
-
-@keyframes dustMove {
-  0%, 5% {
-    left: -100px;
-    opacity: 0;
-  }
-  10%, 45% {
-    opacity: 0.6;
-  }
-  48%, 52% {
-    left: calc(90% - 150px);
-    opacity: 0;
-  }
-  55%, 95% {
-    opacity: 0.6;
-  }
-  98%, 100% {
-    left: 10%;
-    opacity: 0;
-  }
-}
-
 /* Clouds */
 .hero .cloud {
   position: absolute;
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.22);
   border-radius: 100px;
-  opacity: 0.7;
-  animation: cloudFloat 30s linear infinite;
+  opacity: 0.55;
+  animation: cloudFloat 35s linear infinite;
 }
 
 .hero .cloud1 {
-  width: 100px;
-  height: 40px;
-  top: 15%;
-  left: -150px;
+  width: 110px;
+  height: 42px;
+  top: 12%;
+  left: -160px;
 }
 
 .hero .cloud2 {
-  width: 140px;
-  height: 50px;
-  top: 25%;
-  left: -200px;
-  animation-duration: 40s;
-  animation-delay: 5s;
+  width: 150px;
+  height: 52px;
+  top: 22%;
+  left: -210px;
+  animation-duration: 45s;
+  animation-delay: 6s;
 }
 
 .hero .cloud3 {
-  width: 80px;
-  height: 35px;
-  top: 35%;
-  left: -100px;
-  animation-duration: 35s;
-  animation-delay: 10s;
+  width: 85px;
+  height: 36px;
+  top: 32%;
+  left: -120px;
+  animation-duration: 38s;
+  animation-delay: 12s;
 }
 
 @keyframes cloudFloat {
   from { transform: translateX(0); }
-  to { transform: translateX(calc(100vw + 200px)); }
+  to { transform: translateX(calc(100vw + 250px)); }
 }
 
-/* Ensure content stays on top */
+/* Hero Content */
 .hero .container {
   position: relative;
   z-index: 10;
 }
 
-.hero-content h1 {
-  font-size: clamp(28px, 5vw, 48px);
-  margin-bottom: clamp(12px, 2vw, 20px);
-  line-height: 1.2;
+.hero-title {
+  font-size: clamp(30px, 5.5vw, 54px);
+  font-weight: 800;
+  margin-bottom: clamp(14px, 2.5vw, 24px);
+  line-height: 1.15;
   padding: 0 16px;
+  background: linear-gradient(135deg, #1a202c 0%, #2d3748 40%, #667eea 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
 }
 
 .hero-subtitle {
-  font-size: clamp(14px, 2.2vw, 20px);
-  max-width: min(700px, 90vw);
-  margin: 0 auto clamp(20px, 4vw, 40px);
-  opacity: 0.9;
+  font-size: clamp(14px, 2.2vw, 19px);
+  max-width: min(680px, 88vw);
+  margin: 0 auto clamp(24px, 4vw, 44px);
+  opacity: 0.85;
   padding: 0 16px;
-  line-height: 1.6;
+  line-height: 1.7;
+  color: #4a5568;
+  font-weight: 400;
 }
 
 .hero-buttons {
   display: flex;
-  gap: clamp(8px, 1.5vw, 14px);
+  gap: clamp(10px, 1.8vw, 16px);
   justify-content: center;
   flex-wrap: wrap;
   padding: 0 16px;
 }
 
 .btn-large {
-  padding: clamp(10px, 1.5vw, 12px) clamp(20px, 3vw, 28px);
+  padding: clamp(11px, 1.6vw, 14px) clamp(22px, 3.5vw, 32px);
   font-size: clamp(13px, 1.5vw, 15px);
   font-weight: 600;
   letter-spacing: 0.3px;
-  border-radius: 8px;
+  border-radius: 10px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
 .btn-large:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 }
 
 .features,
@@ -1042,11 +692,6 @@
 
 /* ========== Responsive: Hero Animations ========== */
 @media (max-width: 1024px) {
-  .hero .fare-display {
-    top: 20%;
-    right: 15%;
-  }
-
   .hero .traffic-signal {
     display: none;
   }
@@ -1054,7 +699,7 @@
 
 @media (max-width: 768px) {
   .hero {
-    padding: 50px 0 140px;
+    padding: 55px 0 130px;
   }
 
   .hero .animated-road {
@@ -1062,45 +707,31 @@
   }
 
   .hero .road-surface {
-    height: 60px;
-    bottom: 20px;
+    height: 55px;
+    bottom: 18px;
   }
 
   .hero .road-edge-top {
-    bottom: 80px;
+    bottom: 73px;
   }
 
   .hero .road-edge-bottom {
-    bottom: 20px;
+    bottom: 18px;
   }
 
   .hero .road-line {
-    bottom: 50px;
+    bottom: 46px;
   }
 
   .hero .car {
-    font-size: 5rem;
+    font-size: 4.5rem;
   }
 
   .hero .location-marker {
     display: none;
   }
 
-  .hero .fare-display {
-    display: none;
-  }
-
   .hero .traffic-signal {
-    display: none;
-  }
-
-  .hero .thought-cloud-container {
-    display: none;
-  }
-
-  .hero .waiting-passenger,
-  .hero .dropped-passenger,
-  .hero .verified-badge-pickup {
     display: none;
   }
 
@@ -1119,32 +750,28 @@
 
 @media (max-width: 480px) {
   .hero {
-    padding: 40px 0 120px;
+    padding: 40px 0 110px;
   }
 
   .hero .animated-road {
-    height: 80px;
+    height: 75px;
   }
 
   .hero .road-surface {
-    height: 45px;
-    bottom: 15px;
+    height: 42px;
+    bottom: 14px;
   }
 
   .hero .road-line {
-    bottom: 38px;
+    bottom: 35px;
   }
 
   .hero .car {
-    font-size: 3.5rem;
+    font-size: 3rem;
   }
 
   .hero .vehicle-container {
-    bottom: 20px;
-  }
-
-  .hero .dust-trail {
-    display: none;
+    bottom: 18px;
   }
 
   .grid-4,
@@ -1169,7 +796,7 @@
    ============================ */
 
 .stats-section {
-  padding: clamp(40px, 8vw, 80px) 0;
+  padding: clamp(50px, 8vw, 90px) 0;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   position: relative;
   overflow: hidden;
@@ -1193,38 +820,44 @@
   grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr));
   gap: clamp(16px, 3vw, 32px);
   text-align: center;
+  position: relative;
+  z-index: 1;
 }
 
 .stat-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: clamp(16px, 3vw, 24px);
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  transition: transform 0.3s ease, background 0.3s ease;
+  gap: 10px;
+  padding: clamp(24px, 3vw, 36px) clamp(16px, 2vw, 24px);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .stat-card:hover {
-  transform: translateY(-4px);
-  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-6px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .stat-number {
-  font-size: clamp(2rem, 5vw, 3rem);
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
   font-weight: 800;
-  color: #fff;
+  color: #ffffff;
   line-height: 1;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
 }
 
 .stat-label {
-  font-size: clamp(0.8rem, 1.5vw, 1rem);
-  color: rgba(255, 255, 255, 0.85);
-  font-weight: 500;
+  font-size: clamp(0.85rem, 1.5vw, 1.05rem);
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 600;
   letter-spacing: 0.5px;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
 }
 
 @media (max-width: 480px) {
