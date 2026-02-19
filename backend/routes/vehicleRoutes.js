@@ -8,7 +8,7 @@ const { protect, authorize } = require('../middleware/auth');
 // @access  Public
 router.get('/', async (req, res) => {
   try {
-    const { type, category, city, state, minPrice, maxPrice, availability } = req.query;
+    const { type, category, city, state, place, minPrice, maxPrice, availability } = req.query;
     
     let query = {};
     
@@ -16,6 +16,7 @@ router.get('/', async (req, res) => {
     if (category) query.category = category;
     if (city) query['location.city'] = new RegExp(city, 'i');
     if (state) query['location.state'] = new RegExp(state, 'i');
+    if (place) query['location.area'] = new RegExp(place, 'i');
     if (availability) query.availability = availability;
     else query.availability = 'available'; // Default to available only
     

@@ -1,10 +1,9 @@
-import React, { useState, useEffect, useContext, useRef } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../../context/AuthContext';
 import { toast } from 'react-toastify';
 import { Sidebar } from './Dashboard';
-import { animate, stagger } from 'animejs';
 import './OwnerPanel.css';
 
 const MyRentals = () => {
@@ -24,39 +23,8 @@ const MyRentals = () => {
   });
   const location = useLocation();
   const navigate = useNavigate();
-  const modalRef = useRef(null);
-  const overlayRef = useRef(null);
 
   useEffect(() => { fetchVehicles(); }, []);
-
-  // Anime.js modal entrance animation
-  useEffect(() => {
-    if (showModal && modalRef.current && overlayRef.current) {
-      animate(overlayRef.current, {
-        opacity: [0, 1],
-        duration: 300,
-        easing: 'out-quad'
-      });
-
-      animate(modalRef.current, {
-        opacity: [0, 1],
-        scale: [0.9, 1],
-        translateY: [20, 0],
-        duration: 400,
-        easing: 'out-cubic',
-        delay: 100
-      });
-
-      // Stagger animation for form fields
-      animate('.form-group', {
-        opacity: [0, 1],
-        translateY: [10, 0],
-        duration: 300,
-        delay: stagger(30, { start: 300 }),
-        easing: 'out-quad'
-      });
-    }
-  }, [showModal]);
 
   const fetchVehicles = async () => {
     try {
@@ -259,8 +227,8 @@ const MyRentals = () => {
 
         {/* Add/Edit Vehicle Modal */}
         {showModal && (
-          <div ref={overlayRef} className="modal-overlay" onClick={() => setShowModal(false)}>
-            <div ref={modalRef} className="modal-content" onClick={e => e.stopPropagation()}>
+          <div className="modal-overlay" onClick={() => setShowModal(false)}>
+            <div className="modal-content" onClick={e => e.stopPropagation()}>
               <div className="modal-header">
                 <h2>{editingVehicle ? 'Edit Vehicle' : 'Add New Vehicle'}</h2>
                 <button className="modal-close" onClick={() => setShowModal(false)}>✕</button>
@@ -268,114 +236,114 @@ const MyRentals = () => {
               <form className="owner-form" onSubmit={handleSubmit}>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>🚗 Vehicle Name</label>
+                    <label>Vehicle Name</label>
                     <input name="name" value={formData.name} onChange={handleChange} placeholder="e.g. Honda Activa" required />
                   </div>
                   <div className="form-group">
-                    <label>🔖 Registration Number</label>
+                    <label>Registration Number</label>
                     <input name="registrationNumber" value={formData.registrationNumber} onChange={handleChange} placeholder="e.g. WB01AB1234" required />
                   </div>
                 </div>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>🛵 Vehicle Type</label>
+                    <label>Type</label>
                     <select name="type" value={formData.type} onChange={handleChange}>
-                      <option value="scooter">🛵 Scooter</option>
-                      <option value="scooty">🛴 Scooty</option>
-                      <option value="motorcycle">🏍️ Motorcycle</option>
-                      <option value="bicycle">🚲 Bicycle</option>
-                      <option value="car">🚗 Car</option>
+                      <option value="scooter">Scooter</option>
+                      <option value="scooty">Scooty</option>
+                      <option value="motorcycle">Motorcycle</option>
+                      <option value="bicycle">Bicycle</option>
+                      <option value="car">Car</option>
                     </select>
                   </div>
                   <div className="form-group">
-                    <label>⚡ Category</label>
+                    <label>Category</label>
                     <select name="category" value={formData.category} onChange={handleChange}>
-                      <option value="non-electric">⛽ Non-Electric</option>
-                      <option value="electric">⚡ Electric</option>
+                      <option value="non-electric">Non-Electric</option>
+                      <option value="electric">Electric</option>
                     </select>
                   </div>
                 </div>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>🏭 Brand</label>
+                    <label>Brand</label>
                     <input name="brand" value={formData.brand} onChange={handleChange} placeholder="e.g. Honda" required />
                   </div>
                   <div className="form-group">
-                    <label>📦 Model</label>
+                    <label>Model</label>
                     <input name="model" value={formData.model} onChange={handleChange} placeholder="e.g. Activa 6G" required />
                   </div>
                 </div>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>⛽ Fuel Type</label>
+                    <label>Fuel Type</label>
                     <input name="fuelType" value={formData.fuelType} onChange={handleChange} placeholder="petrol / electric / manual" />
                   </div>
                   <div className="form-group">
-                    <label>👥 Seating Capacity</label>
+                    <label>Seating Capacity</label>
                     <input name="seatingCapacity" type="number" value={formData.seatingCapacity} onChange={handleChange} placeholder="e.g. 2" />
                   </div>
                 </div>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>📊 Mileage</label>
+                    <label>Mileage</label>
                     <input name="mileage" value={formData.mileage} onChange={handleChange} placeholder="e.g. 50 km/l" />
                   </div>
                   <div className="form-group">
-                    <label>📅 Year</label>
+                    <label>Year</label>
                     <input name="year" type="number" value={formData.year} onChange={handleChange} placeholder="e.g. 2023" />
                   </div>
                 </div>
 
-                <h4 style={{ margin: '12px 0 6px', color: '#334155', fontSize: 13, fontWeight: 700 }}>💰 Pricing (₹)</h4>
+                <h4 style={{ margin: '16px 0 8px', color: '#334155', fontSize: 14 }}>💰 Pricing (₹)</h4>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>⏱️ Hourly</label>
+                    <label>Hourly</label>
                     <input name="hourly" type="number" value={formData.hourly} onChange={handleChange} required />
                   </div>
                   <div className="form-group">
-                    <label>📅 Daily</label>
+                    <label>Daily</label>
                     <input name="daily" type="number" value={formData.daily} onChange={handleChange} required />
                   </div>
                 </div>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>🗓️ Weekly</label>
+                    <label>Weekly</label>
                     <input name="weekly" type="number" value={formData.weekly} onChange={handleChange} required />
                   </div>
                   <div className="form-group">
-                    <label>🔒 Security Deposit</label>
+                    <label>Security Deposit</label>
                     <input name="securityDeposit" type="number" value={formData.securityDeposit} onChange={handleChange} required />
                   </div>
                 </div>
 
-                <h4 style={{ margin: '12px 0 6px', color: '#334155', fontSize: 13, fontWeight: 700 }}>📍 Location</h4>
+                <h4 style={{ margin: '16px 0 8px', color: '#334155', fontSize: 14 }}>📍 Location</h4>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>🏙️ City</label>
+                    <label>City</label>
                     <input name="city" value={formData.city} onChange={handleChange} placeholder="e.g. Kolkata" required />
                   </div>
                   <div className="form-group">
-                    <label>🗺️ State</label>
+                    <label>State</label>
                     <input name="state" value={formData.state} onChange={handleChange} placeholder="e.g. West Bengal" required />
                   </div>
                 </div>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>📌 Area</label>
+                    <label>Area</label>
                     <input name="area" value={formData.area} onChange={handleChange} placeholder="e.g. Salt Lake" />
                   </div>
                   <div className="form-group">
-                    <label>📍 Pickup Address</label>
+                    <label>Pickup Address</label>
                     <input name="pickupAddress" value={formData.pickupAddress} onChange={handleChange} placeholder="Pickup location" />
                   </div>
                 </div>
                 <div className="form-row">
                   <div className="form-group">
-                    <label>🌐 Longitude</label>
+                    <label>Longitude</label>
                     <input name="longitude" type="number" step="any" value={formData.longitude} onChange={handleChange} placeholder="e.g. 88.3639" required />
                   </div>
                   <div className="form-group">
-                    <label>🌐 Latitude</label>
+                    <label>Latitude</label>
                     <input name="latitude" type="number" step="any" value={formData.latitude} onChange={handleChange} placeholder="e.g. 22.5726" required />
                   </div>
                 </div>

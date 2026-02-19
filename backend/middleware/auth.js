@@ -12,14 +12,14 @@ exports.protect = async (req, res, next) => {
   if (!token) {
     return res.status(401).json({
       success: false,
-      message: 'User credentials required. Kindly register or login'
+      message: 'Not authorized to access this route'
     });
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.user = await User.findById(decoded.id);
-
+    
     if (!req.user) {
       return res.status(401).json({
         success: false,
